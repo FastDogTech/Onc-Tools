@@ -1,6 +1,164 @@
-<html>
-  <body>
-    <img width=250 src="img/FastDogLogo.png">
-    <h2>Onc Tools!</h2>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onc Tools - Your Healthcare Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background-color: var(--primary-color);
+            padding: 1rem 0;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 100px 0;
+        }
+        
+        .feature-card {
+            border: none;
+            border-radius: 15px;
+            transition: transform 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border: none;
+            padding: 10px 30px;
+            border-radius: 25px;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <h1 class="h4 mb-0">Onc Tools</h1>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-4">Essential Tools for Oncology Nurses</h1>
+                    <p class="lead mb-4">Streamline your oncology practice with powerful, time-saving tools designed specifically for oncology nurses.</p>
+                    <a href="#" class="d-inline-block">
+                        <img src="img/Download_on_the_App_Store_Badge_US-UK_RGB_blk_092917.svg" alt="Download on the App Store" height="40">
+                    </a>
+                </div>
+                <div class="col-lg-6">
+                    <img src="img/onctools-logo.png" alt="Onc Tools Logo" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Key Features</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card feature-card h-100 p-4">
+                        <div class="text-center">
+                            <i class="fas fa-calculator feature-icon"></i>
+                            <h3>Dosing Calculators</h3>
+                            <p>Calculate precise drug dosages based on BSA, AUC, and patient weight with built-in safety checks.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card feature-card h-100 p-4">
+                        <div class="text-center">
+                            <i class="fas fa-file-medical feature-icon"></i>
+                            <h3>Emetic Risk Reference</h3>
+                            <p>Instantly assess medication emetic risk and receive evidence-based anti-emetic recommendations.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="card feature-card h-100 p-4">
+                        <div class="text-center">
+                            <i class="fas fa-calendar-check feature-icon"></i>
+                            <h3>Date Finder</h3>
+                            <p>Calculate chemotherapy administration dates with precision, including past and future cycles.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="mb-4">About Onc Tools</h2>
+                    <p class="lead">Enhancing oncology nursing practice through innovative technology solutions.</p>
+                    <p>Our app is developed by oncology nurses for oncology nurses, ensuring every feature addresses real clinical needs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h5>Onc Tools</h5>
+                    <p>Empowering oncology nurses with practical, time-saving solutions.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
