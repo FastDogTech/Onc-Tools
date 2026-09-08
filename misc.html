@@ -15,8 +15,6 @@
   <div id="pageHeader"></div>
   <main>
     <div class="card">
-      <div class="card-header">Labs</div>
-
       <div class="accordion-item">
         <button class="accordion-toggle" type="button" id="ancToggle" aria-expanded="false">
           <span>Absolute Neutrophil Count</span>
@@ -40,13 +38,14 @@
         </button>
         <div class="accordion-panel" id="gfrPanel" hidden></div>
       </div>
-    </div>
 
-    <div class="card">
-      <div class="card-header">Conversions</div>
-      <div id="heightContainer"></div>
-      <div id="weightContainer"></div>
-      <div id="tempContainer"></div>
+      <div class="accordion-item">
+        <button class="accordion-toggle" type="button" id="conversionsToggle" aria-expanded="false">
+          <span>Unit Conversions</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="accordion-panel" id="conversionsPanel" hidden></div>
+      </div>
     </div>
     <div id="resetContainer"></div>
   </main>
@@ -64,33 +63,53 @@ renderResetButton(document.getElementById('resetContainer'), () => {
   temperature = null;
 });
 
-renderHeightInput(document.getElementById('heightContainer'));
-renderWeightInput(document.getElementById('weightContainer'));
-renderTemperatureInput(
-  document.getElementById('tempContainer'),
-  () => temperature,
-  (v) => { temperature = v; }
-);
+function setupAccordion(items) {
+  const entries = items.map(item => ({
+    ...item,
+    toggle: document.getElementById(item.toggleId),
+    panel: document.getElementById(item.panelId),
+    initialized: false
+  }));
 
-function setupAccordion(toggleId, panelId, renderFn) {
-  const toggle = document.getElementById(toggleId);
-  const panel = document.getElementById(panelId);
-  let initialized = false;
+  entries.forEach(entry => {
+    entry.toggle.addEventListener('click', () => {
+      const isOpen = entry.toggle.getAttribute('aria-expanded') === 'true';
 
-  toggle.addEventListener('click', () => {
-    const isOpen = toggle.getAttribute('aria-expanded') === 'true';
-    if (!isOpen && !initialized) {
-      renderFn(panel);
-      initialized = true;
-    }
-    toggle.setAttribute('aria-expanded', String(!isOpen));
-    panel.hidden = isOpen;
+      entries.forEach(other => {
+        if (other !== entry) {
+          other.toggle.setAttribute('aria-expanded', 'false');
+          other.panel.hidden = true;
+        }
+      });
+
+      if (!isOpen && !entry.initialized) {
+        entry.renderFn(entry.panel);
+        entry.initialized = true;
+      }
+      entry.toggle.setAttribute('aria-expanded', String(!isOpen));
+      entry.panel.hidden = isOpen;
+    });
   });
 }
 
-setupAccordion('ancToggle', 'ancPanel', (panel) => renderANCCalculator(panel, { standalone: false }));
-setupAccordion('calciumToggle', 'calciumPanel', (panel) => renderCorrectedCalciumCalculator(panel, { standalone: false }));
-setupAccordion('gfrToggle', 'gfrPanel', (panel) => renderCrClEgfrCalculator(panel, { standalone: false }));
+setupAccordion([
+  { toggleId: 'ancToggle', panelId: 'ancPanel', renderFn: (panel) => renderANCCalculator(panel, { standalone: false }) },
+  { toggleId: 'calciumToggle', panelId: 'calciumPanel', renderFn: (panel) => renderCorrectedCalciumCalculator(panel, { standalone: false }) },
+  { toggleId: 'gfrToggle', panelId: 'gfrPanel', renderFn: (panel) => renderCrClEgfrCalculator(panel, { standalone: false }) },
+  {
+    toggleId: 'conversionsToggle', panelId: 'conversionsPanel', renderFn: (panel) => {
+      const heightContainer = el('div');
+      const weightContainer = el('div');
+      const tempContainer = el('div');
+      panel.appendChild(heightContainer);
+      panel.appendChild(weightContainer);
+      panel.appendChild(tempContainer);
+      renderHeightInput(heightContainer);
+      renderWeightInput(weightContainer);
+      renderTemperatureInput(tempContainer, () => temperature, (v) => { temperature = v; });
+    }
+  }
+]);
 </script>
 </body>
 </html>

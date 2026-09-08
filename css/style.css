@@ -405,6 +405,12 @@ main {
   background: var(--surface-2);
 }
 
+.accordion-toggle[aria-expanded="true"] {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
+  font-weight: 700;
+}
+
 .accordion-toggle .chevron {
   color: var(--text-secondary);
   font-size: 18px;
@@ -417,7 +423,9 @@ main {
 }
 
 .accordion-panel {
-  padding-bottom: 8px;
+  margin: 4px 12px 12px;
+  padding-left: 8px;
+  border-left: 3px solid var(--accent);
 }
 
 .color-swatches {
