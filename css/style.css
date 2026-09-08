@@ -73,7 +73,7 @@ body {
   background:
     radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 60%) fixed,
     var(--bg);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--accent);
 }
 
 .tabbar::-webkit-scrollbar { display: none; }
