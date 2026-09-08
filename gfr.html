@@ -2,35 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="refresh" content="0; url=misc.html">
 <title>Creatinine Clearance / eGFR - Onc Tools</title>
-<link rel="stylesheet" href="css/style.css">
-<link rel="icon" type="image/png" href="img/favicon-32.png">
-<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Onc Tools">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#007AFF">
-<script src="js/state.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/calculators.js"></script>
-<script>initChrome();</script>
+<script>location.replace('misc.html');</script>
 </head>
 <body>
-<div class="page">
-  <div id="pageHeader"></div>
-  <main>
-    <div id="gfrContainer"></div>
-    <div id="resetContainer"></div>
-    <p class="formula-note">Cockcroft-Gault: CrCl = ((140 - age) × weight × (0.85 if female)) / (72 × SCr)</p>
-    <p class="formula-note">MDRD: GFR = 175 × (SCr)^-1.154 × (Age)^-0.203 × (0.742 if female)</p>
-  </main>
-</div>
-
-<script>
-renderHeader(document.getElementById('pageHeader'), { active: 'misc' });
-renderResetButton(document.getElementById('resetContainer'), () => { Patient.weight = null; });
-renderCrClEgfrCalculator(document.getElementById('gfrContainer'));
-</script>
+<p><a href="misc.html">Continue to CrCl / eGFR Calculator</a></p>
 </body>
 </html>

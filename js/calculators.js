@@ -207,8 +207,10 @@ function renderCrClEgfrCalculator(container) {
     ])
   ]));
 
-  let age = null;
+  let age = Patient.age;
   let serumCreatinine = null;
+
+  if (age !== null) ageInput.value = String(age);
 
   function recalc() {
     const hasCrcl = age !== null && Patient.weight !== null && serumCreatinine !== null && serumCreatinine > 0;
@@ -236,7 +238,7 @@ function renderCrClEgfrCalculator(container) {
     if (age !== null) {
       if (age < 18) setError(ageError, 'Age must be 18 or older for accurate results');
       else if (age > 120) setError(ageError, 'Please verify age');
-      else setError(ageError, null);
+      else { setError(ageError, null); Patient.age = age; }
     } else {
       setError(ageError, null);
     }

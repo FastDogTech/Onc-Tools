@@ -96,11 +96,12 @@ const targetAucError = document.getElementById('targetAucError');
 const resultValue = document.getElementById('resultValue');
 const resultMaxNote = document.getElementById('resultMaxNote');
 
-let age = null;
+let age = Patient.age;
 let serumCreatinine = null;
 let maxClearance = Settings.maxCreatinineClearance;
 let targetAUC = 5;
 
+if (age !== null) ageInput.value = String(age);
 maxClearanceSelect.value = String(maxClearance);
 targetAucInput.value = String(targetAUC);
 
@@ -198,7 +199,7 @@ const sexWidget = renderSexToggle(sexContainer, recalc);
 
 const historyCard = renderHistoryCard(document.getElementById('historyContainer'), {
   key: 'aucHistory',
-  columns: ['Age', 'Wt', 'SCr', 'CrCl', 'Target AUC', 'Dose'],
+  columns: ['Age', 'Wt', 'SCr', 'CrCl', 'AUC', 'Dose'],
   formatRow(entry) {
     const w = UnitManager.convertWeightToDisplay(entry.weight);
     return [
