@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="css/style.css">
 <script src="js/state.js"></script>
 <script src="js/ui.js"></script>
+<script src="js/calculators.js"></script>
 <script>initChrome();</script>
 </head>
 <body>
@@ -15,9 +16,30 @@
   <main>
     <div class="card">
       <div class="card-header">Labs</div>
-      <a class="link-row" href="anc.html">Absolute Neutrophil Count</a>
-      <a class="link-row" href="calcium.html">Corrected Calcium</a>
-      <a class="link-row" href="gfr.html">Creatinine Clearance / eGFR</a>
+
+      <div class="accordion-item">
+        <button class="accordion-toggle" type="button" id="ancToggle" aria-expanded="false">
+          <span>Absolute Neutrophil Count</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="accordion-panel" id="ancPanel" hidden></div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-toggle" type="button" id="calciumToggle" aria-expanded="false">
+          <span>Corrected Calcium</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="accordion-panel" id="calciumPanel" hidden></div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-toggle" type="button" id="gfrToggle" aria-expanded="false">
+          <span>Creatinine Clearance / eGFR</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="accordion-panel" id="gfrPanel" hidden></div>
+      </div>
     </div>
 
     <div class="card">
@@ -37,6 +59,8 @@ renderHeader(document.getElementById('pageHeader'), { active: 'misc' });
 renderResetButton(document.getElementById('resetContainer'), () => {
   Patient.height = null;
   Patient.weight = null;
+  Patient.serumCalcium = null;
+  Patient.albumin = null;
   temperature = null;
 });
 
@@ -47,6 +71,26 @@ renderTemperatureInput(
   () => temperature,
   (v) => { temperature = v; }
 );
+
+function setupAccordion(toggleId, panelId, renderFn) {
+  const toggle = document.getElementById(toggleId);
+  const panel = document.getElementById(panelId);
+  let initialized = false;
+
+  toggle.addEventListener('click', () => {
+    const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+    if (!isOpen && !initialized) {
+      renderFn(panel);
+      initialized = true;
+    }
+    toggle.setAttribute('aria-expanded', String(!isOpen));
+    panel.hidden = isOpen;
+  });
+}
+
+setupAccordion('ancToggle', 'ancPanel', (panel) => renderANCCalculator(panel, { standalone: false }));
+setupAccordion('calciumToggle', 'calciumPanel', (panel) => renderCorrectedCalciumCalculator(panel, { standalone: false }));
+setupAccordion('gfrToggle', 'gfrPanel', (panel) => renderCrClEgfrCalculator(panel, { standalone: false }));
 </script>
 </body>
 </html>
