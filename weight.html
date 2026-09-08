@@ -51,6 +51,8 @@
       </div>
     </div>
     <div id="resetContainer"></div>
+    <p class="formula-note" id="ibwFormulaNote" hidden>Ideal Body Weight (Devine): IBW = 50 (male) / 45.5 (female) + 0.9055 × (Height − 152.4 cm)</p>
+    <p class="formula-note" id="adjFormulaNote" hidden>Adjusted Body Weight: AdjBW = IBW + 0.4 × (Actual − IBW)</p>
   </main>
 </div>
 
@@ -66,6 +68,8 @@ const doseInput = document.getElementById('doseInput');
 const calcResult = document.getElementById('calcResult');
 const doseError = document.getElementById('doseError');
 const segmentedButtons = document.querySelectorAll('#segmented button');
+const ibwFormulaNote = document.getElementById('ibwFormulaNote');
+const adjFormulaNote = document.getElementById('adjFormulaNote');
 
 let selectedType = 'Actual';
 let dose = null;
@@ -83,6 +87,9 @@ function recalc() {
   weightTypeValue.textContent = display.toFixed(1) + ' ' + UnitManager.weightUnitLabel;
 
   segmentedButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.type === selectedType));
+
+  ibwFormulaNote.hidden = selectedType === 'Actual';
+  adjFormulaNote.hidden = selectedType !== 'Adjusted';
 
   if (dose !== null && weightKg > 0) {
     calcResult.textContent = (dose * display).toFixed(1);
