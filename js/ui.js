@@ -233,7 +233,7 @@ const TABS = [
   { id: 'auc', label: 'AUC', href: 'auc.html' },
   { id: 'weight', label: 'Weight', href: 'weight.html' },
   { id: 'misc', label: 'Misc', href: 'misc.html' },
-  { id: 'date-finder', label: 'Date Finder', href: 'date-finder.html' },
+  { id: 'date-finder', label: 'Date Tool', href: 'date-finder.html' },
   { id: 'settings', label: 'Settings', href: 'settings.html' }
 ];
 
