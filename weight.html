@@ -44,14 +44,13 @@
       </div>
       <div class="error-text" id="multiplierError" hidden></div>
     </div>
+    <div id="resetContainer"></div>
   </main>
 </div>
 
 <script>
-renderHeader(document.getElementById('pageHeader'), {
-  active: 'weight',
-  onReset: () => { Patient.reset(); }
-});
+renderHeader(document.getElementById('pageHeader'), { active: 'weight' });
+renderResetButton(document.getElementById('resetContainer'), () => { Patient.reset(); });
 
 const heightContainer = document.getElementById('heightContainer');
 const weightContainer = document.getElementById('weightContainer');

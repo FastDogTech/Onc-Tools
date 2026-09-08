@@ -67,14 +67,13 @@
         <span class="value"><span id="resultValue">-</span><span class="unit" id="resultMaxNote"></span></span>
       </div>
     </div>
+    <div id="resetContainer"></div>
   </main>
 </div>
 
 <script>
-renderHeader(document.getElementById('pageHeader'), {
-  active: 'auc',
-  onReset: () => { Patient.reset(); }
-});
+renderHeader(document.getElementById('pageHeader'), { active: 'auc' });
+renderResetButton(document.getElementById('resetContainer'), () => { Patient.reset(); });
 
 const ageInput = document.getElementById('ageInput');
 const ageError = document.getElementById('ageError');

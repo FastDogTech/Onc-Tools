@@ -45,14 +45,13 @@
       </div>
       <div class="card-footer">ANC = WBC × ((Neutrophils + Bands) / 100)</div>
     </div>
+    <div id="resetContainer"></div>
   </main>
 </div>
 
 <script>
-renderHeader(document.getElementById('pageHeader'), {
-  active: 'misc',
-  onReset: () => {}
-});
+renderHeader(document.getElementById('pageHeader'), { active: 'misc' });
+renderResetButton(document.getElementById('resetContainer'), () => {});
 
 const wbcInput = document.getElementById('wbcInput');
 const neutrophilsInput = document.getElementById('neutrophilsInput');

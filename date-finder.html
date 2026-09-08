@@ -44,14 +44,13 @@
         <input class="date-picker-input" id="startDateInput" type="datetime-local">
       </div>
     </div>
+    <div id="resetContainer"></div>
   </main>
 </div>
 
 <script>
-renderHeader(document.getElementById('pageHeader'), {
-  active: 'date-finder',
-  onReset: () => { saveValue('timeMode', 'weeks'); }
-});
+renderHeader(document.getElementById('pageHeader'), { active: 'date-finder' });
+renderResetButton(document.getElementById('resetContainer'), () => { saveValue('timeMode', 'weeks'); });
 
 const sentence = document.getElementById('sentence');
 const resultDay = document.getElementById('resultDay');

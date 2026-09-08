@@ -36,16 +36,15 @@
       </div>
       <div class="card-footer">Corrected Ca = Serum Ca + 0.8 × (4.0 - Albumin)</div>
     </div>
+    <div id="resetContainer"></div>
   </main>
 </div>
 
 <script>
-renderHeader(document.getElementById('pageHeader'), {
-  active: 'misc',
-  onReset: () => {
-    Patient.serumCalcium = null;
-    Patient.albumin = null;
-  }
+renderHeader(document.getElementById('pageHeader'), { active: 'misc' });
+renderResetButton(document.getElementById('resetContainer'), () => {
+  Patient.serumCalcium = null;
+  Patient.albumin = null;
 });
 
 const calciumInput = document.getElementById('calciumInput');

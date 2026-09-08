@@ -26,19 +26,18 @@
       <div id="weightContainer"></div>
       <div id="tempContainer"></div>
     </div>
+    <div id="resetContainer"></div>
   </main>
 </div>
 
 <script>
 let temperature = null;
 
-renderHeader(document.getElementById('pageHeader'), {
-  active: 'misc',
-  onReset: () => {
-    Patient.height = null;
-    Patient.weight = null;
-    temperature = null;
-  }
+renderHeader(document.getElementById('pageHeader'), { active: 'misc' });
+renderResetButton(document.getElementById('resetContainer'), () => {
+  Patient.height = null;
+  Patient.weight = null;
+  temperature = null;
 });
 
 renderHeightInput(document.getElementById('heightContainer'));

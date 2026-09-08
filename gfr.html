@@ -50,14 +50,13 @@
       </div>
       <div class="card-footer">MDRD: GFR = 175 × (SCr)^-1.154 × (Age)^-0.203 × (0.742 if female)</div>
     </div>
+    <div id="resetContainer"></div>
   </main>
 </div>
 
 <script>
-renderHeader(document.getElementById('pageHeader'), {
-  active: 'misc',
-  onReset: () => { Patient.weight = null; }
-});
+renderHeader(document.getElementById('pageHeader'), { active: 'misc' });
+renderResetButton(document.getElementById('resetContainer'), () => { Patient.weight = null; });
 
 const ageInput = document.getElementById('ageInput');
 const ageError = document.getElementById('ageError');

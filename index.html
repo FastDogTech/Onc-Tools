@@ -39,14 +39,13 @@
       </div>
       <div class="error-text" id="amountError" hidden></div>
     </div>
+    <div id="resetContainer"></div>
   </main>
 </div>
 
 <script>
-renderHeader(document.getElementById('pageHeader'), {
-  active: 'bsa',
-  onReset: () => { Patient.reset(); }
-});
+renderHeader(document.getElementById('pageHeader'), { active: 'bsa' });
+renderResetButton(document.getElementById('resetContainer'), () => { Patient.reset(); });
 
 const heightContainer = document.getElementById('heightContainer');
 const weightContainer = document.getElementById('weightContainer');

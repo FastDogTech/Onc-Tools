@@ -232,7 +232,7 @@ const TABS = [
 ];
 
 function renderHeader(container, opts) {
-  const { active, onReset } = opts;
+  const { active } = opts;
 
   const tabbar = el('nav', { class: 'tabbar' });
   TABS.forEach(t => {
@@ -243,12 +243,12 @@ function renderHeader(container, opts) {
     }));
   });
   container.appendChild(tabbar);
+}
 
-  if (onReset) {
-    const sub = el('div', { class: 'subheader' });
-    const resetBtn = el('button', { type: 'button', class: 'reset-btn', text: 'Reset' });
-    wireResetButton(resetBtn, onReset);
-    sub.appendChild(resetBtn);
-    container.appendChild(sub);
-  }
+function renderResetButton(container, onReset) {
+  const wrap = el('div', { class: 'reset-bar' });
+  const btn = el('button', { type: 'button', class: 'btn-reset', text: 'Reset' });
+  wireResetButton(btn, onReset);
+  wrap.appendChild(btn);
+  container.appendChild(wrap);
 }
