@@ -61,6 +61,14 @@ body {
   display: contents;
 }
 
+.site-title {
+  text-align: center;
+  padding: 16px 16px 4px;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--accent);
+}
+
 .tabbar {
   display: flex;
   overflow-x: auto;
