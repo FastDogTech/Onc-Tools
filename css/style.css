@@ -244,6 +244,12 @@ main {
   color: #ffffff;
 }
 
+.toggle-btn.static {
+  display: inline-block;
+  text-align: center;
+  cursor: default;
+}
+
 .result-row {
   display: flex;
   align-items: baseline;
