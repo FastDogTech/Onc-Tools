@@ -62,11 +62,21 @@ body {
 }
 
 .site-title {
-  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   padding: 16px 16px 4px;
   font-size: 24px;
   font-weight: 800;
   color: var(--accent);
+}
+
+.site-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex: 0 0 auto;
 }
 
 .tabbar {

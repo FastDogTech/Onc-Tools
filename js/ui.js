@@ -234,7 +234,10 @@ const TABS = [
 function renderHeader(container, opts) {
   const { active } = opts;
 
-  container.appendChild(el('div', { class: 'site-title', text: 'Onc Tools' }));
+  container.appendChild(el('div', { class: 'site-title' }, [
+    el('img', { class: 'site-logo', src: 'img/onctoolslogo-96.png', alt: '', width: '32', height: '32' }),
+    document.createTextNode('Onc Tools')
+  ]));
 
   const tabbar = el('nav', { class: 'tabbar' });
   TABS.forEach(t => {
