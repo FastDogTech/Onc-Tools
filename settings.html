@@ -11,11 +11,7 @@
 </head>
 <body>
 <div class="page">
-  <header class="topbar">
-    <a class="back" href="index.html">‹ Home</a>
-    <h1>Settings</h1>
-    <span style="width:40px"></span>
-  </header>
+  <div id="pageHeader"></div>
   <main>
     <div class="card">
       <div class="card-header">Appearance</div>
@@ -83,6 +79,11 @@
 </div>
 
 <script>
+renderHeader(document.getElementById('pageHeader'), {
+  active: 'settings',
+  title: 'Settings'
+});
+
 const accentLabel = document.getElementById('accentLabel');
 const swatchesEl = document.getElementById('swatches');
 const themeSelect = document.getElementById('themeSelect');

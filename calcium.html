@@ -11,11 +11,7 @@
 </head>
 <body>
 <div class="page">
-  <header class="topbar">
-    <a class="back" href="misc.html">‹ Back</a>
-    <h1>Corrected Calcium</h1>
-    <button class="reset-btn" id="resetBtn">Reset</button>
-  </header>
+  <div id="pageHeader"></div>
   <main>
     <div class="card">
       <div class="card-header">Lab Values</div>
@@ -44,6 +40,15 @@
 </div>
 
 <script>
+renderHeader(document.getElementById('pageHeader'), {
+  active: 'misc',
+  title: 'Corrected Calcium',
+  onReset: () => {
+    Patient.serumCalcium = null;
+    Patient.albumin = null;
+  }
+});
+
 const calciumInput = document.getElementById('calciumInput');
 const albuminInput = document.getElementById('albuminInput');
 const calciumError = document.getElementById('calciumError');
@@ -94,11 +99,6 @@ albuminInput.addEventListener('input', () => {
 });
 
 refresh();
-
-wireResetButton(document.getElementById('resetBtn'), () => {
-  Patient.serumCalcium = null;
-  Patient.albumin = null;
-});
 </script>
 </body>
 </html>

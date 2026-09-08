@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Onc Tools</title>
+<title>BSA Calculator - Onc Tools</title>
 <meta name="description" content="Oncology clinical calculators: BSA, AUC, weight-based dosing, ANC, corrected calcium, creatinine clearance/eGFR, and a date finder.">
 <link rel="stylesheet" href="css/style.css">
 <script src="js/state.js"></script>
@@ -12,36 +12,112 @@
 </head>
 <body>
 <div class="page">
+  <div id="pageHeader"></div>
   <main>
-    <div class="hero-title">Onc Tools</div>
-    <nav class="nav-list">
-      <a class="nav-card" href="bsa.html">
-        <span class="icon">📐</span>
-        <span class="title">BSA Calculator</span>
-      </a>
-      <a class="nav-card" href="auc.html">
-        <span class="icon">💧</span>
-        <span class="title">AUC Calculator</span>
-      </a>
-      <a class="nav-card" href="weight.html">
-        <span class="icon">⚖️</span>
-        <span class="title">Weight-Based</span>
-      </a>
-      <a class="nav-card" href="misc.html">
-        <span class="icon">∑</span>
-        <span class="title">Misc Calculators</span>
-      </a>
-      <a class="nav-card" href="date-finder.html">
-        <span class="icon">📅</span>
-        <span class="title">Date Finder</span>
-      </a>
-      <a class="nav-card" href="settings.html">
-        <span class="icon">⚙️</span>
-        <span class="title">Settings</span>
-      </a>
-    </nav>
-    <p class="disclaimer">For use by healthcare professionals. Verify all calculations independently before clinical use.</p>
+    <div class="card">
+      <div id="heightContainer"></div>
+      <div id="weightContainer"></div>
+      <div class="field-row">
+        <span class="field-label">BSA Formula</span>
+        <div class="field-input-group"><button class="toggle-btn" id="formulaBtn" type="button"></button></div>
+      </div>
+      <div class="field-row">
+        <span class="field-label">BSA</span>
+        <div class="field-input-group"><strong id="bsaValue">0.00 m²</strong></div>
+      </div>
+      <div class="card-footer" id="formulaFooter"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Calculator</div>
+      <div class="calc-row">
+        <span id="calcBsa">0.00 m²</span>
+        <span class="op">×</span>
+        <input class="num-input" id="amountInput" inputmode="decimal" placeholder="Amount">
+        <span class="op">=</span>
+        <span class="result" id="calcResult">-</span>
+      </div>
+      <div class="error-text" id="amountError" hidden></div>
+    </div>
   </main>
 </div>
+
+<script>
+renderHeader(document.getElementById('pageHeader'), {
+  active: 'bsa',
+  title: 'BSA Calculator',
+  onReset: () => { Patient.reset(); }
+});
+
+const heightContainer = document.getElementById('heightContainer');
+const weightContainer = document.getElementById('weightContainer');
+const formulaBtn = document.getElementById('formulaBtn');
+const bsaValue = document.getElementById('bsaValue');
+const formulaFooter = document.getElementById('formulaFooter');
+const calcBsa = document.getElementById('calcBsa');
+const amountInput = document.getElementById('amountInput');
+const calcResult = document.getElementById('calcResult');
+const amountError = document.getElementById('amountError');
+
+let selectedFormula = Settings.defaultBSAFormula;
+let amount = null;
+
+const FORMULA_STRINGS = {
+  Dubois: 'm² = 0.007184 × (height^0.725) × (weight^0.425)',
+  Mosteller: 'm² = √(height × weight) / 3600'
+};
+
+function currentBSA() {
+  return selectedFormula === 'Dubois'
+    ? Formulas.bsaDubois(Patient.height, Patient.weight)
+    : Formulas.bsaMosteller(Patient.height, Patient.weight);
+}
+
+function recalc() {
+  const bsa = currentBSA();
+  bsaValue.textContent = bsa.toFixed(2) + ' m²';
+  calcBsa.textContent = bsa.toFixed(2) + ' m²';
+  formulaBtn.textContent = selectedFormula;
+  formulaFooter.textContent = FORMULA_STRINGS[selectedFormula];
+
+  if (amount !== null && bsa > 0) {
+    calcResult.textContent = (bsa * amount).toFixed(2);
+  } else {
+    calcResult.textContent = '-';
+  }
+}
+
+formulaBtn.addEventListener('click', () => {
+  selectedFormula = selectedFormula === 'Dubois' ? 'Mosteller' : 'Dubois';
+  recalc();
+});
+
+amountInput.addEventListener('input', () => {
+  const value = parseNum(amountInput.value);
+  if (value !== null) {
+    if (value < 0) {
+      setError(amountError, 'Amount cannot be negative');
+      amount = null;
+    } else if (value > 10000) {
+      setError(amountError, 'Amount must be less than 10,000');
+      amount = null;
+    } else if (!Number.isFinite(value)) {
+      setError(amountError, 'Invalid number entered');
+      amount = null;
+    } else {
+      setError(amountError, null);
+      amount = value;
+    }
+  } else {
+    setError(amountError, null);
+    amount = null;
+  }
+  recalc();
+});
+
+renderHeightInput(heightContainer, recalc);
+renderWeightInput(weightContainer, recalc);
+recalc();
+</script>
 </body>
 </html>

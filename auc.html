@@ -11,11 +11,7 @@
 </head>
 <body>
 <div class="page">
-  <header class="topbar">
-    <a class="back" href="index.html">‹ Home</a>
-    <h1>AUC Calculator</h1>
-    <button class="reset-btn" id="resetBtn">Reset</button>
-  </header>
+  <div id="pageHeader"></div>
   <main>
     <div class="card">
       <div class="field-row">
@@ -75,6 +71,12 @@
 </div>
 
 <script>
+renderHeader(document.getElementById('pageHeader'), {
+  active: 'auc',
+  title: 'AUC Calculator',
+  onReset: () => { Patient.reset(); }
+});
+
 const ageInput = document.getElementById('ageInput');
 const ageError = document.getElementById('ageError');
 const weightContainer = document.getElementById('weightContainer');
@@ -186,10 +188,6 @@ targetAucInput.addEventListener('input', () => {
 renderWeightInput(weightContainer, recalc);
 renderSexToggle(sexContainer, recalc);
 recalc();
-
-wireResetButton(document.getElementById('resetBtn'), () => {
-  Patient.reset();
-});
 </script>
 </body>
 </html>

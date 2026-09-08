@@ -11,11 +11,7 @@
 </head>
 <body>
 <div class="page">
-  <header class="topbar">
-    <a class="back" href="index.html">‹ Home</a>
-    <h1>Date Finder</h1>
-    <button class="reset-btn" id="resetBtn">Reset</button>
-  </header>
+  <div id="pageHeader"></div>
   <main>
     <p class="date-sentence" id="sentence"></p>
 
@@ -52,6 +48,12 @@
 </div>
 
 <script>
+renderHeader(document.getElementById('pageHeader'), {
+  active: 'date-finder',
+  title: 'Date Finder',
+  onReset: () => { saveValue('timeMode', 'weeks'); }
+});
+
 const sentence = document.getElementById('sentence');
 const resultDay = document.getElementById('resultDay');
 const resultDate = document.getElementById('resultDate');
@@ -155,10 +157,6 @@ startDateInput.addEventListener('input', () => {
 });
 
 recalc();
-
-wireResetButton(document.getElementById('resetBtn'), () => {
-  saveValue('timeMode', 'weeks');
-});
 </script>
 </body>
 </html>

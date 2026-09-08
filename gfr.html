@@ -11,11 +11,7 @@
 </head>
 <body>
 <div class="page">
-  <header class="topbar">
-    <a class="back" href="misc.html">‹ Back</a>
-    <h1>CrCl / eGFR</h1>
-    <button class="reset-btn" id="resetBtn">Reset</button>
-  </header>
+  <div id="pageHeader"></div>
   <main>
     <div class="card">
       <div class="card-header">Patient Information</div>
@@ -58,6 +54,12 @@
 </div>
 
 <script>
+renderHeader(document.getElementById('pageHeader'), {
+  active: 'misc',
+  title: 'CrCl / eGFR',
+  onReset: () => { Patient.weight = null; }
+});
+
 const ageInput = document.getElementById('ageInput');
 const ageError = document.getElementById('ageError');
 const weightContainer = document.getElementById('weightContainer');
@@ -117,10 +119,6 @@ creatinineInput.addEventListener('input', () => {
 renderWeightInput(weightContainer, recalc);
 renderSexToggle(sexContainer, recalc);
 recalc();
-
-wireResetButton(document.getElementById('resetBtn'), () => {
-  Patient.weight = null;
-});
 </script>
 </body>
 </html>

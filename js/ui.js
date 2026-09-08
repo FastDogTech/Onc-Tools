@@ -221,3 +221,35 @@ function wireResetButton(button, onReset) {
     location.reload();
   });
 }
+
+const TABS = [
+  { id: 'bsa', label: 'BSA', href: 'index.html' },
+  { id: 'auc', label: 'AUC', href: 'auc.html' },
+  { id: 'weight', label: 'Weight', href: 'weight.html' },
+  { id: 'misc', label: 'Misc', href: 'misc.html' },
+  { id: 'date-finder', label: 'Date Finder', href: 'date-finder.html' },
+  { id: 'settings', label: 'Settings', href: 'settings.html' }
+];
+
+function renderHeader(container, opts) {
+  const { active, title, onReset } = opts;
+
+  const tabbar = el('nav', { class: 'tabbar' });
+  TABS.forEach(t => {
+    tabbar.appendChild(el('a', {
+      href: t.href,
+      class: 'tab' + (t.id === active ? ' active' : ''),
+      text: t.label
+    }));
+  });
+  container.appendChild(tabbar);
+
+  const sub = el('div', { class: 'subheader' });
+  sub.appendChild(el('h1', { text: title }));
+  if (onReset) {
+    const resetBtn = el('button', { type: 'button', class: 'reset-btn', text: 'Reset' });
+    wireResetButton(resetBtn, onReset);
+    sub.appendChild(resetBtn);
+  }
+  container.appendChild(sub);
+}
