@@ -344,6 +344,27 @@ main {
   color: #ffffff;
 }
 
+.segmented-inline {
+  display: flex;
+  gap: 6px;
+}
+
+.segmented-inline button {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: none;
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.segmented-inline button.active {
+  background: var(--accent);
+  color: #ffffff;
+}
+
 .link-row {
   display: block;
   padding: 14px 16px;

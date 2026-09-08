@@ -21,15 +21,13 @@
 
     <div class="card">
       <div class="field-row">
-        <span class="field-label" id="weightTypeLabel">Actual Body Weight</span>
-        <div class="field-input-group"><strong id="weightTypeValue">0.0 kg</strong></div>
+        <div class="segmented-inline" id="segmented">
+          <button data-type="Actual" type="button">Actual</button>
+          <button data-type="Adjusted" type="button">Adjusted</button>
+          <button data-type="Ideal" type="button">Ideal</button>
+        </div>
+        <strong id="weightTypeValue">0.0 kg</strong>
       </div>
-    </div>
-
-    <div class="segmented" id="segmented">
-      <button data-type="Actual" type="button">Actual</button>
-      <button data-type="Adjusted" type="button">Adjusted</button>
-      <button data-type="Ideal" type="button">Ideal</button>
     </div>
 
     <div class="card">
@@ -57,7 +55,6 @@ renderResetButton(document.getElementById('resetContainer'), () => { Patient.res
 const heightContainer = document.getElementById('heightContainer');
 const weightContainer = document.getElementById('weightContainer');
 const sexContainer = document.getElementById('sexContainer');
-const weightTypeLabel = document.getElementById('weightTypeLabel');
 const weightTypeValue = document.getElementById('weightTypeValue');
 const doseInput = document.getElementById('doseInput');
 const calcResult = document.getElementById('calcResult');
@@ -74,19 +71,12 @@ function currentWeightKg() {
   return Patient.weight ?? 0;
 }
 
-function refreshSexVisibility() {
-  sexContainer.style.display = (selectedType === 'Ideal' || selectedType === 'Adjusted') ? '' : 'none';
-}
-
 function recalc() {
   const weightKg = currentWeightKg();
   const display = UnitManager.convertWeightToDisplay(weightKg) ?? 0;
-  const label = selectedType + ' Body Weight';
-  weightTypeLabel.textContent = label;
   weightTypeValue.textContent = display.toFixed(1) + ' ' + UnitManager.weightUnitLabel;
 
   segmentedButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.type === selectedType));
-  refreshSexVisibility();
 
   if (dose !== null && weightKg > 0) {
     calcResult.textContent = (dose * display).toFixed(1);
