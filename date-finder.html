@@ -22,11 +22,17 @@
     <div class="card">
       <div style="padding:16px;">
         <span class="field-label" style="display:block; margin-bottom:8px;">Starting Date</span>
-        <input class="date-picker-input" id="startDateInput" type="datetime-local">
+        <div style="display:flex; gap:8px; align-items:center;">
+          <input class="date-picker-input" id="startDateInput" type="datetime-local" style="flex:1;">
+          <button class="toggle-btn" id="todayBtn" type="button">Today</button>
+        </div>
       </div>
     </div>
 
     <div class="card no-dividers">
+      <div style="padding:12px 16px 0;">
+        <span class="field-label">Adjust By</span>
+      </div>
       <div class="field-row" style="justify-content:center; gap:8px; flex-wrap:wrap;">
         <input class="num-input" id="incrementInput" inputmode="numeric" style="width:70px; text-align:center;" value="1">
         <div class="segmented-inline" id="periodSegmented">
@@ -63,6 +69,7 @@ const incrementInput = document.getElementById('incrementInput');
 const incrementError = document.getElementById('incrementError');
 const periodButtons = document.querySelectorAll('#periodSegmented button');
 const startDateInput = document.getElementById('startDateInput');
+const todayBtn = document.getElementById('todayBtn');
 
 let startDate = new Date();
 let timeIncrement = 1;
@@ -97,10 +104,6 @@ function recalc() {
 
   pastBtn.classList.toggle('active-period', timeDirection === 'past');
   futureBtn.classList.toggle('active-period', timeDirection === 'future');
-  pastBtn.style.background = timeDirection === 'past' ? 'var(--accent)' : '';
-  pastBtn.style.color = timeDirection === 'past' ? '#fff' : '';
-  futureBtn.style.background = timeDirection === 'future' ? 'var(--accent)' : '';
-  futureBtn.style.color = timeDirection === 'future' ? '#fff' : '';
 
   periodButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.period === timePeriod));
 }
@@ -130,6 +133,12 @@ startDateInput.addEventListener('input', () => {
     startDate = new Date(startDateInput.value);
     recalc();
   }
+});
+
+todayBtn.addEventListener('click', () => {
+  startDate = new Date();
+  startDateInput.value = toLocalInputValue(startDate);
+  recalc();
 });
 
 recalc();
