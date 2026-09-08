@@ -19,8 +19,7 @@
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-header" id="periodLabel">Weeks</div>
+    <div class="card no-dividers">
       <div class="field-row" style="justify-content:center; gap:12px;">
         <button class="toggle-btn" id="pastBtn" type="button">Past</button>
         <input class="num-input" id="incrementInput" inputmode="numeric" style="width:70px; text-align:center;" value="1">
@@ -35,9 +34,8 @@
       </div>
     </div>
 
-    <p class="date-sentence" id="sentence"></p>
-
     <div class="date-result">
+      <span class="sentence" id="sentence"></span>
       <span class="day" id="resultDay"></span>
       <div class="datetime">
         <span id="resultDate"></span>
@@ -56,7 +54,6 @@ const sentence = document.getElementById('sentence');
 const resultDay = document.getElementById('resultDay');
 const resultDate = document.getElementById('resultDate');
 const resultTime = document.getElementById('resultTime');
-const periodLabel = document.getElementById('periodLabel');
 const pastBtn = document.getElementById('pastBtn');
 const futureBtn = document.getElementById('futureBtn');
 const incrementInput = document.getElementById('incrementInput');
@@ -116,7 +113,6 @@ function recalc() {
 
   sentence.textContent = `${timeIncrement} ${pluralizedTimePeriod()} ${timeDirection === 'past' ? 'before' : 'from'} ${formattedStartDate()} is:`;
 
-  periodLabel.textContent = timePeriod.charAt(0).toUpperCase() + timePeriod.slice(1);
   pastBtn.classList.toggle('active-period', timeDirection === 'past');
   futureBtn.classList.toggle('active-period', timeDirection === 'future');
   pastBtn.style.background = timeDirection === 'past' ? 'var(--accent)' : '';
