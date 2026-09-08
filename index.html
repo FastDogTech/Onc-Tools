@@ -30,7 +30,6 @@
         <div class="field-input-group"><input class="num-input" id="doseInput" inputmode="decimal" placeholder="Dose"></div>
       </div>
       <div class="error-text" id="doseError" hidden></div>
-      <div class="card-footer" id="formulaFooter"></div>
     </div>
 
     <div class="card">
@@ -40,6 +39,7 @@
       </div>
     </div>
     <div id="resetContainer"></div>
+    <p class="formula-note" id="formulaFooter"></p>
   </main>
 </div>
 
@@ -74,7 +74,7 @@ function recalc() {
   const bsa = currentBSA();
   bsaValue.textContent = bsa.toFixed(2) + ' m²';
   formulaBtn.textContent = selectedFormula;
-  formulaFooter.textContent = FORMULA_STRINGS[selectedFormula];
+  formulaFooter.textContent = selectedFormula + ': ' + FORMULA_STRINGS[selectedFormula];
 
   if (dose !== null && bsa > 0) {
     calcResult.textContent = (bsa * dose).toFixed(2);
