@@ -37,7 +37,8 @@
     </div>
 
     <div class="date-result">
-      <span id="resultLine"></span>
+      <span class="day" id="resultDay"></span>
+      <span class="date" id="resultDate"></span>
     </div>
     <div id="resetContainer"></div>
   </main>
@@ -47,7 +48,8 @@
 renderHeader(document.getElementById('pageHeader'), { active: 'date-finder' });
 renderResetButton(document.getElementById('resetContainer'), () => { saveValue('timeMode', 'weeks'); });
 
-const resultLine = document.getElementById('resultLine');
+const resultDay = document.getElementById('resultDay');
+const resultDate = document.getElementById('resultDate');
 const pastBtn = document.getElementById('pastBtn');
 const futureBtn = document.getElementById('futureBtn');
 const incrementInput = document.getElementById('incrementInput');
@@ -66,26 +68,6 @@ function toLocalInputValue(date) {
 }
 startDateInput.value = toLocalInputValue(startDate);
 
-function pluralizedTimePeriod() {
-  if (timeIncrement === 1) {
-    switch (timePeriod) {
-      case 'hours': return 'hour';
-      case 'days': return 'day';
-      case 'weeks': return 'week';
-      case 'months': return 'month';
-    }
-  }
-  return timePeriod;
-}
-
-function formattedStartDate() {
-  const opts = { month: 'short', day: 'numeric', year: 'numeric' };
-  if (timePeriod === 'hours') {
-    return startDate.toLocaleDateString('en-US', opts) + ', ' + startDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-  }
-  return startDate.toLocaleDateString('en-US', opts);
-}
-
 function addToDate(date, period, amount) {
   const result = new Date(date);
   switch (period) {
@@ -101,12 +83,10 @@ function recalc() {
   const timeVal = timeDirection === 'past' ? -timeIncrement : timeIncrement;
   const result = addToDate(startDate, timePeriod, timeVal);
 
-  const dayOfWeek = result.toLocaleDateString('en-US', { weekday: 'long' });
-  const dateStr = result.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   const timeStr = timePeriod === 'hours' ? ', ' + result.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
 
-  const sentencePart = `${timeIncrement} ${pluralizedTimePeriod()} ${timeDirection === 'past' ? 'before' : 'from'} ${formattedStartDate()} is`;
-  resultLine.textContent = `${sentencePart} ${dayOfWeek}, ${dateStr}${timeStr}.`;
+  resultDay.textContent = result.toLocaleDateString('en-US', { weekday: 'long' });
+  resultDate.textContent = result.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + timeStr;
 
   pastBtn.classList.toggle('active-period', timeDirection === 'past');
   futureBtn.classList.toggle('active-period', timeDirection === 'future');
