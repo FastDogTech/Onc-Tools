@@ -170,6 +170,10 @@ main {
   border-bottom: none;
 }
 
+.field-row.no-divider {
+  border-bottom: none;
+}
+
 .field-label {
   font-size: 16px;
   white-space: nowrap;
