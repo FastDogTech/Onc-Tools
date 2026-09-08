@@ -53,12 +53,12 @@
     <p class="formula-note" id="ibwFormulaNote" hidden>Ideal Body Weight (Devine): IBW = 50 (male) / 45.5 (female) + 0.9055 × (Height − 152.4 cm)</p>
     <p class="formula-note" id="adjFormulaNote" hidden>Adjusted Body Weight: AdjBW = IBW + 0.4 × (Actual − IBW)</p>
     <div id="resetContainer"></div>
+    <div id="historyContainer"></div>
   </main>
 </div>
 
 <script>
 renderHeader(document.getElementById('pageHeader'), { active: 'weight' });
-renderResetButton(document.getElementById('resetContainer'), () => { Patient.reset(); });
 
 const heightContainer = document.getElementById('heightContainer');
 const weightContainer = document.getElementById('weightContainer');
@@ -96,6 +96,14 @@ function recalc() {
   } else {
     calcResult.textContent = '-';
   }
+
+  saveResetBar.refreshSaveState();
+}
+
+function weightKgForEntry(entry) {
+  if (entry.type === 'Ideal') return Formulas.idealBodyWeight(entry.height, entry.sex);
+  if (entry.type === 'Adjusted') return Formulas.adjustedBodyWeight(entry.weight ?? 0, Formulas.idealBodyWeight(entry.height, entry.sex));
+  return entry.weight ?? 0;
 }
 
 segmentedButtons.forEach(btn => {
@@ -128,9 +136,54 @@ doseInput.addEventListener('input', () => {
   recalc();
 });
 
-renderHeightInput(heightContainer, recalc);
-renderWeightInput(weightContainer, recalc);
+const heightWidget = renderHeightInput(heightContainer, recalc);
+const weightWidget = renderWeightInput(weightContainer, recalc);
 sexWidget = renderSexToggle(sexContainer, recalc);
+
+const historyCard = renderHistoryCard(document.getElementById('historyContainer'), {
+  key: 'weightHistory',
+  columns: ['Type', 'Wt', 'Dose', 'Calc'],
+  formatRow(entry) {
+    const w = UnitManager.convertWeightToDisplay(weightKgForEntry(entry));
+    return [
+      entry.type,
+      w !== null ? w.toFixed(1) : '-',
+      entry.dose.toFixed(1),
+      entry.calc.toFixed(1)
+    ];
+  },
+  onRowClick(entry) {
+    Patient.height = entry.height;
+    Patient.weight = entry.weight;
+    Patient.sex = entry.sex;
+    selectedType = entry.type;
+    dose = entry.dose;
+    doseInput.value = String(entry.dose);
+    heightWidget.refresh();
+    weightWidget.refresh();
+    sexWidget.refresh();
+    recalc();
+  }
+});
+
+const saveResetBar = renderSaveResetBar(document.getElementById('resetContainer'), {
+  onSave() {
+    const weightKg = currentWeightKg();
+    const display = UnitManager.convertWeightToDisplay(weightKg) ?? 0;
+    pushHistory('weightHistory', {
+      type: selectedType,
+      height: Patient.height,
+      weight: Patient.weight,
+      sex: Patient.sex,
+      dose,
+      calc: dose * display
+    });
+    historyCard.render();
+  },
+  onReset() { Patient.reset(); },
+  canSave: () => dose !== null && currentWeightKg() > 0
+});
+
 recalc();
 </script>
 </body>

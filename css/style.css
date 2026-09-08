@@ -123,6 +123,8 @@ body {
 .reset-bar {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
   padding: 8px 16px 24px;
 }
 
@@ -140,6 +142,27 @@ body {
 
 .btn-reset:active {
   background: color-mix(in srgb, var(--danger) 24%, transparent);
+}
+
+.btn-save {
+  min-width: 120px;
+  padding: 12px 28px;
+  border-radius: 12px;
+  border: 1px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-save:active {
+  background: color-mix(in srgb, var(--accent) 24%, transparent);
+}
+
+.btn-save:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 main {
@@ -495,6 +518,44 @@ select.pill-select {
   text-align: left;
   padding: 4px 24px 8px;
   margin: 0;
+}
+
+.history-header,
+.history-row {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  font-size: 13px;
+  text-align: center;
+}
+
+.history-header {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+}
+
+.history-row {
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.history-row:last-child {
+  border-bottom: none;
+}
+
+.history-row:active {
+  background: var(--surface-2);
+}
+
+.history-empty {
+  padding: 20px 16px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 13px;
 }
 
 .disclaimer {

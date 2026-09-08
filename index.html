@@ -45,12 +45,12 @@
     </div>
     <p class="formula-note" id="formulaFooter"></p>
     <div id="resetContainer"></div>
+    <div id="historyContainer"></div>
   </main>
 </div>
 
 <script>
 renderHeader(document.getElementById('pageHeader'), { active: 'bsa' });
-renderResetButton(document.getElementById('resetContainer'), () => { Patient.reset(); });
 
 const heightContainer = document.getElementById('heightContainer');
 const weightContainer = document.getElementById('weightContainer');
@@ -86,6 +86,8 @@ function recalc() {
   } else {
     calcResult.textContent = '-';
   }
+
+  saveResetBar.refreshSaveState();
 }
 
 formulaBtn.addEventListener('click', () => {
@@ -116,8 +118,52 @@ doseInput.addEventListener('input', () => {
   recalc();
 });
 
-renderHeightInput(heightContainer, recalc);
-renderWeightInput(weightContainer, recalc);
+const heightWidget = renderHeightInput(heightContainer, recalc);
+const weightWidget = renderWeightInput(weightContainer, recalc);
+
+const historyCard = renderHistoryCard(document.getElementById('historyContainer'), {
+  key: 'bsaHistory',
+  columns: ['Ht', 'Wt', 'BSA', 'Dose', 'Calc'],
+  formatRow(entry) {
+    const h = UnitManager.convertHeightToDisplay(entry.height);
+    const w = UnitManager.convertWeightToDisplay(entry.weight);
+    return [
+      h !== null ? h.toFixed(1) : '-',
+      w !== null ? w.toFixed(1) : '-',
+      entry.bsa.toFixed(2),
+      entry.dose.toFixed(1),
+      entry.calc.toFixed(2)
+    ];
+  },
+  onRowClick(entry) {
+    Patient.height = entry.height;
+    Patient.weight = entry.weight;
+    selectedFormula = entry.formula;
+    dose = entry.dose;
+    doseInput.value = String(entry.dose);
+    heightWidget.refresh();
+    weightWidget.refresh();
+    recalc();
+  }
+});
+
+const saveResetBar = renderSaveResetBar(document.getElementById('resetContainer'), {
+  onSave() {
+    const bsa = currentBSA();
+    pushHistory('bsaHistory', {
+      height: Patient.height,
+      weight: Patient.weight,
+      formula: selectedFormula,
+      bsa,
+      dose,
+      calc: bsa * dose
+    });
+    historyCard.render();
+  },
+  onReset() { Patient.reset(); },
+  canSave: () => dose !== null && currentBSA() > 0
+});
+
 recalc();
 </script>
 </body>

@@ -12,6 +12,18 @@ function saveValue(key, value) {
   }
 }
 
+function loadHistory(key) {
+  return loadValue(key, []);
+}
+
+function pushHistory(key, entry, max = 7) {
+  const list = loadHistory(key);
+  list.unshift(entry);
+  if (list.length > max) list.length = max;
+  saveValue(key, list);
+  return list;
+}
+
 const Settings = {
   accentColors: {
     Blue: '#007AFF',

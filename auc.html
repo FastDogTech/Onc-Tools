@@ -76,12 +76,12 @@
     <p class="formula-note">Cockcroft-Gault: CrCl = ((140 - age) × weight × (0.85 if female)) / (72 × SCr)</p>
     <p class="formula-note">Calvert: Result = Target AUC × (CrCl + 25)</p>
     <div id="resetContainer"></div>
+    <div id="historyContainer"></div>
   </main>
 </div>
 
 <script>
 renderHeader(document.getElementById('pageHeader'), { active: 'auc' });
-renderResetButton(document.getElementById('resetContainer'), () => { Patient.reset(); });
 
 const ageInput = document.getElementById('ageInput');
 const ageError = document.getElementById('ageError');
@@ -134,6 +134,8 @@ function recalc() {
     resultValue.textContent = '-';
     resultMaxNote.textContent = '';
   }
+
+  saveResetBar.refreshSaveState();
 }
 
 ageInput.addEventListener('input', () => {
@@ -191,8 +193,59 @@ targetAucInput.addEventListener('input', () => {
   recalc();
 });
 
-renderWeightInput(weightContainer, recalc);
-renderSexToggle(sexContainer, recalc);
+const weightWidget = renderWeightInput(weightContainer, recalc);
+const sexWidget = renderSexToggle(sexContainer, recalc);
+
+const historyCard = renderHistoryCard(document.getElementById('historyContainer'), {
+  key: 'aucHistory',
+  columns: ['Age', 'Wt', 'SCr', 'CrCl', 'Target AUC', 'Dose'],
+  formatRow(entry) {
+    const w = UnitManager.convertWeightToDisplay(entry.weight);
+    return [
+      String(entry.age),
+      w !== null ? w.toFixed(1) : '-',
+      entry.creatinine.toFixed(1),
+      entry.crcl.toFixed(1),
+      String(entry.targetAUC),
+      entry.result.toFixed(2)
+    ];
+  },
+  onRowClick(entry) {
+    age = entry.age;
+    ageInput.value = String(entry.age);
+    Patient.age = entry.age;
+    Patient.weight = entry.weight;
+    Patient.sex = entry.sex;
+    serumCreatinine = entry.creatinine;
+    creatinineInput.value = String(entry.creatinine);
+    maxClearance = entry.maxClearance;
+    maxClearanceSelect.value = String(entry.maxClearance);
+    targetAUC = entry.targetAUC;
+    targetAucInput.value = String(entry.targetAUC);
+    weightWidget.refresh();
+    sexWidget.refresh();
+    recalc();
+  }
+});
+
+const saveResetBar = renderSaveResetBar(document.getElementById('resetContainer'), {
+  onSave() {
+    pushHistory('aucHistory', {
+      age,
+      weight: Patient.weight,
+      sex: Patient.sex,
+      creatinine: serumCreatinine,
+      maxClearance,
+      targetAUC,
+      crcl: creatinineClearance(),
+      result: Number(resultValue.textContent)
+    });
+    historyCard.render();
+  },
+  onReset() { Patient.reset(); },
+  canSave: () => age !== null && Patient.weight !== null && serumCreatinine !== null && serumCreatinine > 0 && targetAUC !== null && targetAUC >= 0 && targetAUC <= 10
+});
+
 recalc();
 </script>
 </body>

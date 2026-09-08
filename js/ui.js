@@ -273,6 +273,59 @@ function renderResetButton(container, onReset) {
   container.appendChild(wrap);
 }
 
+function renderSaveResetBar(container, { onSave, onReset, canSave }) {
+  const wrap = el('div', { class: 'reset-bar' });
+  const saveBtn = el('button', { type: 'button', class: 'btn-save', text: 'Save' });
+  const resetBtn = el('button', { type: 'button', class: 'btn-reset', text: 'Reset' });
+
+  function refreshSaveState() {
+    saveBtn.disabled = !canSave();
+  }
+
+  saveBtn.addEventListener('click', () => {
+    onSave();
+    refreshSaveState();
+  });
+  wireResetButton(resetBtn, onReset);
+
+  wrap.appendChild(saveBtn);
+  wrap.appendChild(resetBtn);
+  container.appendChild(wrap);
+  refreshSaveState();
+  return { refreshSaveState };
+}
+
+function renderHistoryCard(container, { key, columns, formatRow, onRowClick }) {
+  const gridStyle = `grid-template-columns: repeat(${columns.length}, 1fr);`;
+  const card = el('div', { class: 'card history-card' });
+  const header = el('div', { class: 'history-header' });
+  header.style.cssText = gridStyle;
+  columns.forEach(c => header.appendChild(el('span', { text: c })));
+  const body = el('div', { class: 'history-body' });
+  card.appendChild(header);
+  card.appendChild(body);
+  container.appendChild(card);
+
+  function render() {
+    body.innerHTML = '';
+    const rows = loadHistory(key);
+    if (rows.length === 0) {
+      body.appendChild(el('div', { class: 'history-empty', text: 'No saved calculations yet' }));
+      return;
+    }
+    rows.forEach(entry => {
+      const row = el('div', { class: 'history-row' });
+      row.style.cssText = gridStyle;
+      formatRow(entry).forEach(text => row.appendChild(el('span', { text })));
+      if (onRowClick) row.addEventListener('click', () => onRowClick(entry));
+      body.appendChild(row);
+    });
+  }
+
+  render();
+  return { render };
+}
+
 function setupSubtabs(tabs, noteContainer) {
   const entries = tabs.map(t => ({
     ...t,
