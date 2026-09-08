@@ -24,6 +24,10 @@ function pushHistory(key, entry, max = 10) {
   return list;
 }
 
+function clearHistory(key) {
+  saveValue(key, []);
+}
+
 const Settings = {
   accentColors: {
     Blue: '#007AFF',

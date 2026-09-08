@@ -298,17 +298,30 @@ function renderSaveResetBar(container, { onSave, onReset, canSave }) {
 function renderHistoryCard(container, { key, columns, formatRow, onRowClick }) {
   const gridStyle = `grid-template-columns: repeat(${columns.length}, 1fr);`;
   const card = el('div', { class: 'card history-card' });
+  const titleBar = el('div', { class: 'history-title-bar' });
+  const title = el('span', { class: 'history-title', text: 'History' });
+  const clearBtn = el('button', { class: 'history-clear-btn', type: 'button', text: 'Clear' });
+  titleBar.appendChild(title);
+  titleBar.appendChild(clearBtn);
   const header = el('div', { class: 'history-header' });
   header.style.cssText = gridStyle;
   columns.forEach(c => header.appendChild(el('span', { text: c })));
   const body = el('div', { class: 'history-body' });
+  card.appendChild(titleBar);
   card.appendChild(header);
   card.appendChild(body);
   container.appendChild(card);
 
+  clearBtn.addEventListener('click', () => {
+    if (!confirm('Clear all saved calculations?')) return;
+    clearHistory(key);
+    render();
+  });
+
   function render() {
     body.innerHTML = '';
     const rows = loadHistory(key);
+    clearBtn.hidden = rows.length === 0;
     if (rows.length === 0) {
       body.appendChild(el('div', { class: 'history-empty', text: 'No saved calculations yet' }));
       return;

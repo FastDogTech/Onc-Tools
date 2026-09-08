@@ -439,6 +439,33 @@ select.pill-select {
   margin: 0;
 }
 
+.history-title-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px 0;
+}
+
+.history-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.history-clear-btn {
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 6px;
+  cursor: pointer;
+}
+
+.history-clear-btn:active {
+  opacity: 0.6;
+}
+
 .history-header,
 .history-row {
   display: grid;
