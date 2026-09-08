@@ -99,15 +99,9 @@ body {
 .subheader {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 8px;
-  padding: 14px 16px 4px;
-}
-
-.subheader h1 {
-  font-size: 20px;
-  font-weight: 700;
-  margin: 0;
+  padding: 10px 16px 0;
 }
 
 .subheader .reset-btn {
