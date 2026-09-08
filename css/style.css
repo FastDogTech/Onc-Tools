@@ -457,6 +457,7 @@ select.pill-select {
   font-size: 16px;
   font-weight: 600;
   line-height: 1.4;
+  text-align: center;
 }
 
 .formula-note {

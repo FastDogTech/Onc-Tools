@@ -20,17 +20,19 @@
     </div>
 
     <div class="card no-dividers">
-      <div class="field-row" style="justify-content:center; gap:12px;">
-        <button class="toggle-btn" id="pastBtn" type="button">Past</button>
+      <div class="field-row" style="justify-content:center; gap:8px; flex-wrap:wrap;">
         <input class="num-input" id="incrementInput" inputmode="numeric" style="width:70px; text-align:center;" value="1">
-        <button class="toggle-btn" id="futureBtn" type="button">Future</button>
+        <div class="segmented-inline" id="periodSegmented">
+          <button data-period="hours" type="button">Hours</button>
+          <button data-period="days" type="button">Days</button>
+          <button data-period="weeks" type="button">Weeks</button>
+          <button data-period="months" type="button">Months</button>
+        </div>
       </div>
       <div class="error-text" id="incrementError" hidden></div>
-      <div class="segmented" id="periodSegmented">
-        <button data-period="hours" type="button">Hours</button>
-        <button data-period="days" type="button">Days</button>
-        <button data-period="weeks" type="button">Weeks</button>
-        <button data-period="months" type="button">Months</button>
+      <div class="field-row" style="justify-content:center; gap:12px;">
+        <button class="toggle-btn" id="pastBtn" type="button">Past</button>
+        <button class="toggle-btn" id="futureBtn" type="button">Future</button>
       </div>
     </div>
 
