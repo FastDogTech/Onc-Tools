@@ -43,9 +43,11 @@
         </div>
       </div>
       <div class="error-text" id="incrementError" hidden></div>
-      <div class="field-row" style="justify-content:center; gap:12px;">
-        <button class="toggle-btn" id="pastBtn" type="button">Past</button>
-        <button class="toggle-btn" id="futureBtn" type="button">Future</button>
+      <div class="field-row" style="justify-content:center;">
+        <div class="segmented-inline" id="directionSegmented">
+          <button data-direction="past" type="button">Past</button>
+          <button data-direction="future" type="button">Future</button>
+        </div>
       </div>
     </div>
 
@@ -63,8 +65,7 @@ renderResetButton(document.getElementById('resetContainer'), () => { saveValue('
 
 const resultDay = document.getElementById('resultDay');
 const resultDate = document.getElementById('resultDate');
-const pastBtn = document.getElementById('pastBtn');
-const futureBtn = document.getElementById('futureBtn');
+const directionButtons = document.querySelectorAll('#directionSegmented button');
 const incrementInput = document.getElementById('incrementInput');
 const incrementError = document.getElementById('incrementError');
 const periodButtons = document.querySelectorAll('#periodSegmented button');
@@ -102,14 +103,16 @@ function recalc() {
   resultDay.textContent = result.toLocaleDateString('en-US', { weekday: 'long' });
   resultDate.textContent = result.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + timeStr;
 
-  pastBtn.classList.toggle('active-period', timeDirection === 'past');
-  futureBtn.classList.toggle('active-period', timeDirection === 'future');
-
+  directionButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.direction === timeDirection));
   periodButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.period === timePeriod));
 }
 
-pastBtn.addEventListener('click', () => { timeDirection = 'past'; recalc(); });
-futureBtn.addEventListener('click', () => { timeDirection = 'future'; recalc(); });
+directionButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    timeDirection = btn.dataset.direction;
+    recalc();
+  });
+});
 
 periodButtons.forEach(btn => {
   btn.addEventListener('click', () => {
