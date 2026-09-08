@@ -1,6 +1,4 @@
-function renderANCCalculator(container, opts) {
-  const standalone = !opts || opts.standalone !== false;
-
+function renderANCCalculator(container) {
   const wbcInput = numberInput('WBC');
   const neutrophilsInput = numberInput('Neutrophils');
   const bandsInput = numberInput('Bands');
@@ -12,7 +10,7 @@ function renderANCCalculator(container, opts) {
   const ancValue = el('span', { text: '-' });
   const ancUnit = el('span', { class: 'unit' });
 
-  const labFields = [
+  container.appendChild(el('div', { class: 'card no-dividers' }, [
     el('div', { class: 'field-row' }, [
       el('span', { class: 'field-label' }, [document.createTextNode('WBC '), el('span', { class: 'field-unit', text: '(K/µL)' })]),
       el('div', { class: 'field-input-group' }, [wbcInput])
@@ -30,22 +28,14 @@ function renderANCCalculator(container, opts) {
     bandsError,
     totalWarning,
     totalHint
-  ];
+  ]));
 
-  const resultFields = [
+  container.appendChild(el('div', { class: 'card' }, [
     el('div', { class: 'result-row' }, [
       el('span', { text: 'Absolute Neutrophil Count' }),
       el('span', { class: 'value' }, [ancValue, ancUnit])
-    ]),
-    el('div', { class: 'card-footer', text: 'ANC = WBC × ((Neutrophils + Bands) / 100)' })
-  ];
-
-  if (standalone) {
-    container.appendChild(el('div', { class: 'card' }, [el('div', { class: 'card-header', text: 'Lab Values' }), ...labFields]));
-    container.appendChild(el('div', { class: 'card' }, resultFields));
-  } else {
-    [...labFields, ...resultFields].forEach(n => container.appendChild(n));
-  }
+    ])
+  ]));
 
   let wbc = null, neutrophils = null, bands = null;
 
@@ -106,9 +96,7 @@ function renderANCCalculator(container, opts) {
   });
 }
 
-function renderCorrectedCalciumCalculator(container, opts) {
-  const standalone = !opts || opts.standalone !== false;
-
+function renderCorrectedCalciumCalculator(container) {
   const calciumInput = numberInput('Calcium');
   const albuminInput = numberInput('Albumin');
   const calciumError = errorLine();
@@ -116,7 +104,7 @@ function renderCorrectedCalciumCalculator(container, opts) {
   const calciumValue = el('span', { text: 'Enter values' });
   const calciumUnit = el('span', { class: 'unit' });
 
-  const labFields = [
+  container.appendChild(el('div', { class: 'card no-dividers' }, [
     el('div', { class: 'field-row' }, [
       el('span', { class: 'field-label' }, [document.createTextNode('Serum Calcium '), el('span', { class: 'field-unit', text: '(mg/dL)' })]),
       el('div', { class: 'field-input-group' }, [calciumInput])
@@ -127,22 +115,14 @@ function renderCorrectedCalciumCalculator(container, opts) {
       el('div', { class: 'field-input-group' }, [albuminInput])
     ]),
     albuminError
-  ];
+  ]));
 
-  const resultFields = [
+  container.appendChild(el('div', { class: 'card' }, [
     el('div', { class: 'result-row' }, [
       el('span', { text: 'Corrected Calcium' }),
       el('span', { class: 'value' }, [calciumValue, calciumUnit])
-    ]),
-    el('div', { class: 'card-footer', text: 'Corrected Ca = Serum Ca + 0.8 × (4.0 - Albumin)' })
-  ];
-
-  if (standalone) {
-    container.appendChild(el('div', { class: 'card' }, [el('div', { class: 'card-header', text: 'Lab Values' }), ...labFields]));
-    container.appendChild(el('div', { class: 'card' }, resultFields));
-  } else {
-    [...labFields, ...resultFields].forEach(n => container.appendChild(n));
-  }
+    ])
+  ]));
 
   function recalc() {
     if (Patient.serumCalcium !== null && Patient.albumin !== null) {
@@ -186,11 +166,8 @@ function renderCorrectedCalciumCalculator(container, opts) {
   recalc();
 }
 
-function renderCrClEgfrCalculator(container, opts) {
-  const standalone = !opts || opts.standalone !== false;
-
+function renderCrClEgfrCalculator(container) {
   const ageInput = numberInput('Age');
-  ageInput.style.width = '60px';
   const ageError = errorLine();
   const weightContainer = el('div');
   const sexContainer = el('div');
@@ -201,10 +178,10 @@ function renderCrClEgfrCalculator(container, opts) {
   const gfrValue = el('span', { text: '-' });
   const gfrUnit = el('span', { class: 'unit' });
 
-  const patientFields = [
+  container.appendChild(el('div', { class: 'card no-dividers' }, [
     el('div', { class: 'field-row' }, [
       el('span', { class: 'field-label', text: 'Age' }),
-      el('div', { class: 'field-input-group' }, [ageInput, el('span', { class: 'field-unit', text: 'yrs' })])
+      el('div', { class: 'field-input-group' }, [ageInput, el('span', { class: 'toggle-btn static', text: 'yrs' })])
     ]),
     ageError,
     weightContainer,
@@ -214,31 +191,21 @@ function renderCrClEgfrCalculator(container, opts) {
       el('div', { class: 'field-input-group' }, [creatinineInput])
     ]),
     creatinineError
-  ];
+  ]));
 
-  const crclFields = [
+  container.appendChild(el('div', { class: 'card' }, [
     el('div', { class: 'result-row' }, [
       el('span', { text: 'Creatinine Clearance' }),
       el('span', { class: 'value' }, [crclValue, crclUnit])
-    ]),
-    el('div', { class: 'card-footer', text: 'Cockcroft-Gault: CrCl = ((140 - age) × weight × (0.85 if female)) / (72 × SCr)' })
-  ];
+    ])
+  ]));
 
-  const gfrFields = [
+  container.appendChild(el('div', { class: 'card' }, [
     el('div', { class: 'result-row' }, [
       el('span', { text: 'eGFR' }),
       el('span', { class: 'value' }, [gfrValue, gfrUnit])
-    ]),
-    el('div', { class: 'card-footer', text: 'MDRD: GFR = 175 × (SCr)^-1.154 × (Age)^-0.203 × (0.742 if female)' })
-  ];
-
-  if (standalone) {
-    container.appendChild(el('div', { class: 'card' }, [el('div', { class: 'card-header', text: 'Patient Information' }), ...patientFields]));
-    container.appendChild(el('div', { class: 'card' }, crclFields));
-    container.appendChild(el('div', { class: 'card' }, gfrFields));
-  } else {
-    [...patientFields, ...crclFields, ...gfrFields].forEach(n => container.appendChild(n));
-  }
+    ])
+  ]));
 
   let age = null;
   let serumCreatinine = null;

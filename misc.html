@@ -25,6 +25,7 @@
     <div id="gfrPanel" hidden></div>
     <div id="conversionsPanel" hidden></div>
     <div id="resetContainer"></div>
+    <div id="formulaNotes"></div>
   </main>
 </div>
 
@@ -44,8 +45,7 @@ function renderConversionsPanel(container) {
   const heightContainer = el('div');
   const weightContainer = el('div');
   const tempContainer = el('div');
-  container.appendChild(el('div', { class: 'card' }, [
-    el('div', { class: 'card-header', text: 'Conversions' }),
+  container.appendChild(el('div', { class: 'card no-dividers' }, [
     heightContainer,
     weightContainer,
     tempContainer
@@ -56,11 +56,30 @@ function renderConversionsPanel(container) {
 }
 
 setupSubtabs([
-  { tabId: 'ancTab', panelId: 'ancPanel', renderFn: (panel) => renderANCCalculator(panel) },
-  { tabId: 'calciumTab', panelId: 'calciumPanel', renderFn: (panel) => renderCorrectedCalciumCalculator(panel) },
-  { tabId: 'gfrTab', panelId: 'gfrPanel', renderFn: (panel) => renderCrClEgfrCalculator(panel) },
-  { tabId: 'conversionsTab', panelId: 'conversionsPanel', renderFn: renderConversionsPanel }
-]);
+  {
+    tabId: 'ancTab', panelId: 'ancPanel',
+    renderFn: (panel) => renderANCCalculator(panel),
+    notes: ['ANC = WBC × ((Neutrophils + Bands) / 100)']
+  },
+  {
+    tabId: 'calciumTab', panelId: 'calciumPanel',
+    renderFn: (panel) => renderCorrectedCalciumCalculator(panel),
+    notes: ['Corrected Ca = Serum Ca + 0.8 × (4.0 - Albumin)']
+  },
+  {
+    tabId: 'gfrTab', panelId: 'gfrPanel',
+    renderFn: (panel) => renderCrClEgfrCalculator(panel),
+    notes: [
+      'Cockcroft-Gault: CrCl = ((140 - age) × weight × (0.85 if female)) / (72 × SCr)',
+      'MDRD: GFR = 175 × (SCr)^-1.154 × (Age)^-0.203 × (0.742 if female)'
+    ]
+  },
+  {
+    tabId: 'conversionsTab', panelId: 'conversionsPanel',
+    renderFn: renderConversionsPanel,
+    notes: []
+  }
+], document.getElementById('formulaNotes'));
 </script>
 </body>
 </html>

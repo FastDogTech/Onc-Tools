@@ -253,7 +253,7 @@ function renderResetButton(container, onReset) {
   container.appendChild(wrap);
 }
 
-function setupSubtabs(tabs) {
+function setupSubtabs(tabs, noteContainer) {
   const entries = tabs.map(t => ({
     ...t,
     tabEl: document.getElementById(t.tabId),
@@ -270,6 +270,12 @@ function setupSubtabs(tabs) {
     if (!entry.initialized) {
       entry.renderFn(entry.panelEl);
       entry.initialized = true;
+    }
+    if (noteContainer) {
+      noteContainer.innerHTML = '';
+      (entry.notes || []).forEach(text => {
+        noteContainer.appendChild(el('p', { class: 'formula-note', text }));
+      });
     }
   }
 
