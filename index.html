@@ -25,19 +25,19 @@
         <span class="field-label">BSA</span>
         <div class="field-input-group"><strong id="bsaValue">0.00 m²</strong></div>
       </div>
+      <div class="field-row">
+        <span class="field-label">Dose</span>
+        <div class="field-input-group"><input class="num-input" id="doseInput" inputmode="decimal" placeholder="Dose"></div>
+      </div>
+      <div class="error-text" id="doseError" hidden></div>
       <div class="card-footer" id="formulaFooter"></div>
     </div>
 
     <div class="card">
-      <div class="card-header">Calculator</div>
-      <div class="calc-row">
-        <span id="calcBsa">0.00 m²</span>
-        <span class="op">×</span>
-        <input class="num-input" id="amountInput" inputmode="decimal" placeholder="Amount">
-        <span class="op">=</span>
-        <span class="result" id="calcResult">-</span>
+      <div class="result-row">
+        <span>Result</span>
+        <span class="value"><span id="calcResult">-</span></span>
       </div>
-      <div class="error-text" id="amountError" hidden></div>
     </div>
     <div id="resetContainer"></div>
   </main>
@@ -52,13 +52,12 @@ const weightContainer = document.getElementById('weightContainer');
 const formulaBtn = document.getElementById('formulaBtn');
 const bsaValue = document.getElementById('bsaValue');
 const formulaFooter = document.getElementById('formulaFooter');
-const calcBsa = document.getElementById('calcBsa');
-const amountInput = document.getElementById('amountInput');
+const doseInput = document.getElementById('doseInput');
 const calcResult = document.getElementById('calcResult');
-const amountError = document.getElementById('amountError');
+const doseError = document.getElementById('doseError');
 
 let selectedFormula = Settings.defaultBSAFormula;
-let amount = null;
+let dose = null;
 
 const FORMULA_STRINGS = {
   Dubois: 'm² = 0.007184 × (height^0.725) × (weight^0.425)',
@@ -74,12 +73,11 @@ function currentBSA() {
 function recalc() {
   const bsa = currentBSA();
   bsaValue.textContent = bsa.toFixed(2) + ' m²';
-  calcBsa.textContent = bsa.toFixed(2) + ' m²';
   formulaBtn.textContent = selectedFormula;
   formulaFooter.textContent = FORMULA_STRINGS[selectedFormula];
 
-  if (amount !== null && bsa > 0) {
-    calcResult.textContent = (bsa * amount).toFixed(2);
+  if (dose !== null && bsa > 0) {
+    calcResult.textContent = (bsa * dose).toFixed(2);
   } else {
     calcResult.textContent = '-';
   }
@@ -90,25 +88,25 @@ formulaBtn.addEventListener('click', () => {
   recalc();
 });
 
-amountInput.addEventListener('input', () => {
-  const value = parseNum(amountInput.value);
+doseInput.addEventListener('input', () => {
+  const value = parseNum(doseInput.value);
   if (value !== null) {
     if (value < 0) {
-      setError(amountError, 'Amount cannot be negative');
-      amount = null;
+      setError(doseError, 'Dose cannot be negative');
+      dose = null;
     } else if (value > 10000) {
-      setError(amountError, 'Amount must be less than 10,000');
-      amount = null;
+      setError(doseError, 'Dose must be less than 10,000');
+      dose = null;
     } else if (!Number.isFinite(value)) {
-      setError(amountError, 'Invalid number entered');
-      amount = null;
+      setError(doseError, 'Invalid number entered');
+      dose = null;
     } else {
-      setError(amountError, null);
-      amount = value;
+      setError(doseError, null);
+      dose = value;
     }
   } else {
-    setError(amountError, null);
-    amount = null;
+    setError(doseError, null);
+    dose = null;
   }
   recalc();
 });
