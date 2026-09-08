@@ -154,7 +154,7 @@ function renderWeightInput(container, onChange) {
 
 function renderTemperatureInput(container, getTemp, setTemp, onChange) {
   const wrap = el('div', { class: 'field-block' });
-  const input = numberInput('Temperature');
+  const input = numberInput('Temp');
   const unitBtn = toggleButton('', false);
   const err = errorLine();
 
