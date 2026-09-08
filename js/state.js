@@ -16,7 +16,7 @@ function loadHistory(key) {
   return loadValue(key, []);
 }
 
-function pushHistory(key, entry, max = 7) {
+function pushHistory(key, entry, max = 10) {
   const list = loadHistory(key);
   list.unshift(entry);
   if (list.length > max) list.length = max;
