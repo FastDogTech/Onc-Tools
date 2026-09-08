@@ -57,6 +57,10 @@ body {
   padding: 0 0 48px;
 }
 
+#pageHeader {
+  display: contents;
+}
+
 .tabbar {
   display: flex;
   overflow-x: auto;
@@ -66,7 +70,9 @@ body {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: var(--bg);
+  background:
+    radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 60%) fixed,
+    var(--bg);
   border-bottom: 1px solid var(--border);
 }
 
