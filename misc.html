@@ -23,7 +23,7 @@
     <button class="subtab" type="button" id="ancTab">ANC</button>
     <button class="subtab" type="button" id="calciumTab">Calcium</button>
     <button class="subtab" type="button" id="gfrTab">CrCl / eGFR</button>
-    <button class="subtab" type="button" id="conversionsTab">Conversions</button>
+    <button class="subtab" type="button" id="conversionsTab">Units</button>
   </nav>
   <main>
     <div id="ancPanel"></div>
@@ -83,7 +83,11 @@ setupSubtabs([
   {
     tabId: 'conversionsTab', panelId: 'conversionsPanel',
     renderFn: renderConversionsPanel,
-    notes: []
+    notes: [
+      'Height: cm = in × 2.54',
+      'Weight: kg = lbs / 2.2046',
+      'Temperature: °F = (°C × 9/5) + 32'
+    ]
   }
 ], document.getElementById('formulaNotes'));
 </script>
