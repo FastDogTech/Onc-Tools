@@ -13,13 +13,9 @@
 <div class="page">
   <div id="pageHeader"></div>
   <main>
-    <p class="date-sentence" id="sentence"></p>
-
-    <div class="date-result">
-      <span class="day" id="resultDay"></span>
-      <div class="datetime">
-        <span id="resultDate"></span>
-        <span id="resultTime"></span>
+    <div class="card">
+      <div style="padding:16px;">
+        <input class="date-picker-input" id="startDateInput" type="datetime-local">
       </div>
     </div>
 
@@ -39,9 +35,13 @@
       </div>
     </div>
 
-    <div class="card">
-      <div style="padding:16px;">
-        <input class="date-picker-input" id="startDateInput" type="datetime-local">
+    <p class="date-sentence" id="sentence"></p>
+
+    <div class="date-result">
+      <span class="day" id="resultDay"></span>
+      <div class="datetime">
+        <span id="resultDate"></span>
+        <span id="resultTime"></span>
       </div>
     </div>
     <div id="resetContainer"></div>
