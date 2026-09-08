@@ -13,40 +13,17 @@
 <body>
 <div class="page">
   <div id="pageHeader"></div>
+  <nav class="subtabbar">
+    <button class="subtab" type="button" id="ancTab">ANC</button>
+    <button class="subtab" type="button" id="calciumTab">Calcium</button>
+    <button class="subtab" type="button" id="gfrTab">CrCl / eGFR</button>
+    <button class="subtab" type="button" id="conversionsTab">Conversions</button>
+  </nav>
   <main>
-    <div class="card">
-      <div class="accordion-item">
-        <button class="accordion-toggle" type="button" id="ancToggle" aria-expanded="false">
-          <span>Absolute Neutrophil Count</span>
-          <span class="chevron">›</span>
-        </button>
-        <div class="accordion-panel" id="ancPanel" hidden></div>
-      </div>
-
-      <div class="accordion-item">
-        <button class="accordion-toggle" type="button" id="calciumToggle" aria-expanded="false">
-          <span>Corrected Calcium</span>
-          <span class="chevron">›</span>
-        </button>
-        <div class="accordion-panel" id="calciumPanel" hidden></div>
-      </div>
-
-      <div class="accordion-item">
-        <button class="accordion-toggle" type="button" id="gfrToggle" aria-expanded="false">
-          <span>Creatinine Clearance / eGFR</span>
-          <span class="chevron">›</span>
-        </button>
-        <div class="accordion-panel" id="gfrPanel" hidden></div>
-      </div>
-
-      <div class="accordion-item">
-        <button class="accordion-toggle" type="button" id="conversionsToggle" aria-expanded="false">
-          <span>Unit Conversions</span>
-          <span class="chevron">›</span>
-        </button>
-        <div class="accordion-panel" id="conversionsPanel" hidden></div>
-      </div>
-    </div>
+    <div id="ancPanel"></div>
+    <div id="calciumPanel" hidden></div>
+    <div id="gfrPanel" hidden></div>
+    <div id="conversionsPanel" hidden></div>
     <div id="resetContainer"></div>
   </main>
 </div>
@@ -63,52 +40,26 @@ renderResetButton(document.getElementById('resetContainer'), () => {
   temperature = null;
 });
 
-function setupAccordion(items) {
-  const entries = items.map(item => ({
-    ...item,
-    toggle: document.getElementById(item.toggleId),
-    panel: document.getElementById(item.panelId),
-    initialized: false
-  }));
-
-  entries.forEach(entry => {
-    entry.toggle.addEventListener('click', () => {
-      const isOpen = entry.toggle.getAttribute('aria-expanded') === 'true';
-
-      entries.forEach(other => {
-        if (other !== entry) {
-          other.toggle.setAttribute('aria-expanded', 'false');
-          other.panel.hidden = true;
-        }
-      });
-
-      if (!isOpen && !entry.initialized) {
-        entry.renderFn(entry.panel);
-        entry.initialized = true;
-      }
-      entry.toggle.setAttribute('aria-expanded', String(!isOpen));
-      entry.panel.hidden = isOpen;
-    });
-  });
+function renderConversionsPanel(container) {
+  const heightContainer = el('div');
+  const weightContainer = el('div');
+  const tempContainer = el('div');
+  container.appendChild(el('div', { class: 'card' }, [
+    el('div', { class: 'card-header', text: 'Conversions' }),
+    heightContainer,
+    weightContainer,
+    tempContainer
+  ]));
+  renderHeightInput(heightContainer);
+  renderWeightInput(weightContainer);
+  renderTemperatureInput(tempContainer, () => temperature, (v) => { temperature = v; });
 }
 
-setupAccordion([
-  { toggleId: 'ancToggle', panelId: 'ancPanel', renderFn: (panel) => renderANCCalculator(panel, { standalone: false }) },
-  { toggleId: 'calciumToggle', panelId: 'calciumPanel', renderFn: (panel) => renderCorrectedCalciumCalculator(panel, { standalone: false }) },
-  { toggleId: 'gfrToggle', panelId: 'gfrPanel', renderFn: (panel) => renderCrClEgfrCalculator(panel, { standalone: false }) },
-  {
-    toggleId: 'conversionsToggle', panelId: 'conversionsPanel', renderFn: (panel) => {
-      const heightContainer = el('div');
-      const weightContainer = el('div');
-      const tempContainer = el('div');
-      panel.appendChild(heightContainer);
-      panel.appendChild(weightContainer);
-      panel.appendChild(tempContainer);
-      renderHeightInput(heightContainer);
-      renderWeightInput(weightContainer);
-      renderTemperatureInput(tempContainer, () => temperature, (v) => { temperature = v; });
-    }
-  }
+setupSubtabs([
+  { tabId: 'ancTab', panelId: 'ancPanel', renderFn: (panel) => renderANCCalculator(panel) },
+  { tabId: 'calciumTab', panelId: 'calciumPanel', renderFn: (panel) => renderCorrectedCalciumCalculator(panel) },
+  { tabId: 'gfrTab', panelId: 'gfrPanel', renderFn: (panel) => renderCrClEgfrCalculator(panel) },
+  { tabId: 'conversionsTab', panelId: 'conversionsPanel', renderFn: renderConversionsPanel }
 ]);
 </script>
 </body>

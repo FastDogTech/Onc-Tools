@@ -378,59 +378,35 @@ main {
 
 .link-row:active { background: var(--surface-2); }
 
-.accordion-item {
+.subtabbar {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  gap: 2px;
+  padding: 12px 10px 0;
   border-bottom: 1px solid var(--border);
 }
 
-.accordion-item:last-child {
-  border-bottom: none;
-}
+.subtabbar::-webkit-scrollbar { display: none; }
 
-.accordion-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 14px 16px;
+.subtab {
+  flex: 0 0 auto;
+  padding: 8px 14px;
   border: none;
   background: none;
-  color: var(--text);
-  font-size: 16px;
-  font-weight: 700;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
   font-family: inherit;
-  text-align: left;
   cursor: pointer;
 }
 
-.accordion-toggle:active {
-  background: var(--surface-2);
-}
-
-.accordion-toggle[aria-expanded="true"] {
-  background: color-mix(in srgb, var(--accent) 10%, transparent);
+.subtab.active {
   color: var(--accent);
-}
-
-.accordion-toggle .chevron {
-  color: var(--text-secondary);
-  font-size: 18px;
-  transition: transform 0.15s ease;
-}
-
-.accordion-toggle[aria-expanded="true"] .chevron {
-  transform: rotate(90deg);
-  color: var(--accent);
-}
-
-.accordion-panel {
-  margin: 4px 12px 12px;
-  padding-left: 8px;
-  border-left: 3px solid var(--accent);
-}
-
-.accordion-panel .field-row,
-.accordion-panel .field-block {
-  border-bottom: none;
+  background: var(--surface);
+  border-bottom: 2px solid var(--accent);
 }
 
 .color-swatches {

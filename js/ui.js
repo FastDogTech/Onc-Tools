@@ -252,3 +252,30 @@ function renderResetButton(container, onReset) {
   wrap.appendChild(btn);
   container.appendChild(wrap);
 }
+
+function setupSubtabs(tabs) {
+  const entries = tabs.map(t => ({
+    ...t,
+    tabEl: document.getElementById(t.tabId),
+    panelEl: document.getElementById(t.panelId),
+    initialized: false
+  }));
+
+  function activate(entry) {
+    entries.forEach(e => {
+      const isActive = e === entry;
+      e.tabEl.classList.toggle('active', isActive);
+      e.panelEl.hidden = !isActive;
+    });
+    if (!entry.initialized) {
+      entry.renderFn(entry.panelEl);
+      entry.initialized = true;
+    }
+  }
+
+  entries.forEach(entry => {
+    entry.tabEl.addEventListener('click', () => activate(entry));
+  });
+
+  activate(entries[0]);
+}
