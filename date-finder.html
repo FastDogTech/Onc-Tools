@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Date Finder - Onc Tools</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="js/state.js"></script>
+<script src="js/ui.js"></script>
+<script>initChrome();</script>
+</head>
+<body>
+<div class="page">
+  <header class="topbar">
+    <a class="back" href="index.html">‹ Home</a>
+    <h1>Date Finder</h1>
+    <button class="reset-btn" id="resetBtn">Reset</button>
+  </header>
+  <main>
+    <p class="date-sentence" id="sentence"></p>
+
+    <div class="date-result">
+      <span class="day" id="resultDay"></span>
+      <div class="datetime">
+        <span id="resultDate"></span>
+        <span id="resultTime"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" id="periodLabel">Weeks</div>
+      <div class="field-row" style="justify-content:center; gap:12px;">
+        <button class="toggle-btn" id="pastBtn" type="button">Past</button>
+        <input class="num-input" id="incrementInput" inputmode="numeric" style="width:70px; text-align:center;" value="1">
+        <button class="toggle-btn" id="futureBtn" type="button">Future</button>
+      </div>
+      <div class="error-text" id="incrementError" hidden></div>
+      <div class="segmented" id="periodSegmented">
+        <button data-period="hours" type="button">Hours</button>
+        <button data-period="days" type="button">Days</button>
+        <button data-period="weeks" type="button">Weeks</button>
+        <button data-period="months" type="button">Months</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="padding:16px;">
+        <input class="date-picker-input" id="startDateInput" type="datetime-local">
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const sentence = document.getElementById('sentence');
+const resultDay = document.getElementById('resultDay');
+const resultDate = document.getElementById('resultDate');
+const resultTime = document.getElementById('resultTime');
+const periodLabel = document.getElementById('periodLabel');
+const pastBtn = document.getElementById('pastBtn');
+const futureBtn = document.getElementById('futureBtn');
+const incrementInput = document.getElementById('incrementInput');
+const incrementError = document.getElementById('incrementError');
+const periodButtons = document.querySelectorAll('#periodSegmented button');
+const startDateInput = document.getElementById('startDateInput');
+
+let startDate = new Date();
+let timeIncrement = 1;
+let timeDirection = 'future';
+let timePeriod = loadValue('timeMode', 'weeks');
+
+function toLocalInputValue(date) {
+  const pad = n => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+startDateInput.value = toLocalInputValue(startDate);
+
+function pluralizedTimePeriod() {
+  if (timeIncrement === 1) {
+    switch (timePeriod) {
+      case 'hours': return 'hour';
+      case 'days': return 'day';
+      case 'weeks': return 'week';
+      case 'months': return 'month';
+    }
+  }
+  return timePeriod;
+}
+
+function formattedStartDate() {
+  const opts = { month: 'short', day: 'numeric', year: 'numeric' };
+  if (timePeriod === 'hours') {
+    return startDate.toLocaleDateString('en-US', opts) + ', ' + startDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  }
+  return startDate.toLocaleDateString('en-US', opts);
+}
+
+function addToDate(date, period, amount) {
+  const result = new Date(date);
+  switch (period) {
+    case 'hours': result.setHours(result.getHours() + amount); break;
+    case 'days': result.setDate(result.getDate() + amount); break;
+    case 'weeks': result.setDate(result.getDate() + amount * 7); break;
+    case 'months': result.setMonth(result.getMonth() + amount); break;
+  }
+  return result;
+}
+
+function recalc() {
+  const timeVal = timeDirection === 'past' ? -timeIncrement : timeIncrement;
+  const result = addToDate(startDate, timePeriod, timeVal);
+
+  resultDay.textContent = result.toLocaleDateString('en-US', { weekday: 'long' });
+  resultDate.textContent = result.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  resultTime.textContent = timePeriod === 'hours' ? result.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
+
+  sentence.textContent = `${timeIncrement} ${pluralizedTimePeriod()} ${timeDirection === 'past' ? 'before' : 'from'} ${formattedStartDate()} is:`;
+
+  periodLabel.textContent = timePeriod.charAt(0).toUpperCase() + timePeriod.slice(1);
+  pastBtn.classList.toggle('active-period', timeDirection === 'past');
+  futureBtn.classList.toggle('active-period', timeDirection === 'future');
+  pastBtn.style.background = timeDirection === 'past' ? 'var(--accent)' : '';
+  pastBtn.style.color = timeDirection === 'past' ? '#fff' : '';
+  futureBtn.style.background = timeDirection === 'future' ? 'var(--accent)' : '';
+  futureBtn.style.color = timeDirection === 'future' ? '#fff' : '';
+
+  periodButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.period === timePeriod));
+}
+
+pastBtn.addEventListener('click', () => { timeDirection = 'past'; recalc(); });
+futureBtn.addEventListener('click', () => { timeDirection = 'future'; recalc(); });
+
+periodButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    timePeriod = btn.dataset.period;
+    saveValue('timeMode', timePeriod);
+    recalc();
+  });
+});
+
+incrementInput.addEventListener('input', () => {
+  const value = parseNum(incrementInput.value);
+  timeIncrement = value !== null ? Math.round(value) : 0;
+  if (timeIncrement < 1) setError(incrementError, 'Value must be greater than 0');
+  else if (timeIncrement > 1000) setError(incrementError, 'Please verify value');
+  else setError(incrementError, null);
+  recalc();
+});
+
+startDateInput.addEventListener('input', () => {
+  if (startDateInput.value) {
+    startDate = new Date(startDateInput.value);
+    recalc();
+  }
+});
+
+recalc();
+
+wireResetButton(document.getElementById('resetBtn'), () => {
+  saveValue('timeMode', 'weeks');
+});
+</script>
+</body>
+</html>

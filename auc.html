@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AUC Calculator - Onc Tools</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="js/state.js"></script>
+<script src="js/ui.js"></script>
+<script>initChrome();</script>
+</head>
+<body>
+<div class="page">
+  <header class="topbar">
+    <a class="back" href="index.html">‹ Home</a>
+    <h1>AUC Calculator</h1>
+    <button class="reset-btn" id="resetBtn">Reset</button>
+  </header>
+  <main>
+    <div class="card">
+      <div class="field-row">
+        <span class="field-label">Age</span>
+        <div class="field-input-group">
+          <input class="num-input" id="ageInput" inputmode="numeric" placeholder="Age" style="width:60px">
+          <span class="field-unit">yrs</span>
+        </div>
+      </div>
+      <div class="error-text" id="ageError" hidden></div>
+      <div id="weightContainer"></div>
+      <div id="sexContainer"></div>
+    </div>
+
+    <div class="card">
+      <div class="field-row">
+        <span class="field-label">Serum Creatinine <span class="field-unit">(mg/dL)</span></span>
+        <div class="field-input-group">
+          <input class="num-input" id="creatinineInput" inputmode="decimal" placeholder="Creatinine">
+        </div>
+      </div>
+      <div class="error-text" id="creatinineError" hidden></div>
+
+      <div class="field-row">
+        <span class="field-label">Creatinine Clearance <span class="field-unit">(mL/min)</span></span>
+        <div class="field-input-group"><strong id="crclValue">-</strong></div>
+      </div>
+
+      <div class="field-row">
+        <span class="field-label">Max Cr Clearance</span>
+        <div class="field-input-group">
+          <select class="pill-select" id="maxClearanceSelect">
+            <option value="9999">None</option>
+            <option value="100">100 mL/min</option>
+            <option value="125">125 mL/min</option>
+            <option value="150">150 mL/min</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <span class="field-label">Target AUC</span>
+        <div class="field-input-group">
+          <input class="num-input" id="targetAucInput" inputmode="decimal" placeholder="5">
+        </div>
+      </div>
+      <div class="error-text" id="targetAucError" hidden></div>
+    </div>
+
+    <div class="card">
+      <div class="result-row">
+        <span>Result</span>
+        <span class="value"><span id="resultValue">-</span><span class="unit" id="resultMaxNote"></span></span>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const ageInput = document.getElementById('ageInput');
+const ageError = document.getElementById('ageError');
+const weightContainer = document.getElementById('weightContainer');
+const sexContainer = document.getElementById('sexContainer');
+const creatinineInput = document.getElementById('creatinineInput');
+const creatinineError = document.getElementById('creatinineError');
+const crclValue = document.getElementById('crclValue');
+const maxClearanceSelect = document.getElementById('maxClearanceSelect');
+const targetAucInput = document.getElementById('targetAucInput');
+const targetAucError = document.getElementById('targetAucError');
+const resultValue = document.getElementById('resultValue');
+const resultMaxNote = document.getElementById('resultMaxNote');
+
+let age = null;
+let serumCreatinine = null;
+let maxClearance = Settings.maxCreatinineClearance;
+let targetAUC = 5;
+
+maxClearanceSelect.value = String(maxClearance);
+targetAucInput.value = String(targetAUC);
+
+function validateAge(value) {
+  if (value < 18) return 'Age must be 18 or older for accurate results';
+  if (value > 120) return 'Please verify age';
+  return null;
+}
+
+function creatinineClearance() {
+  return Formulas.cockcroftGault(age, Patient.weight, serumCreatinine, Patient.sex);
+}
+
+function recalc() {
+  if (serumCreatinine !== null && serumCreatinine > 0) {
+    crclValue.textContent = creatinineClearance().toFixed(1);
+  } else {
+    crclValue.textContent = '-';
+  }
+
+  let result = 0;
+  if (targetAUC >= 0 && targetAUC <= 10) {
+    const clearance = Math.min(creatinineClearance(), maxClearance);
+    result = targetAUC * (clearance + 25);
+  }
+
+  if (serumCreatinine !== null && serumCreatinine > 0) {
+    resultValue.textContent = result.toFixed(2);
+    resultMaxNote.textContent = (result === targetAUC * (maxClearance + 25)) ? ' (max)' : '';
+  } else {
+    resultValue.textContent = '-';
+    resultMaxNote.textContent = '';
+  }
+}
+
+ageInput.addEventListener('input', () => {
+  const value = parseNum(ageInput.value);
+  age = value !== null ? Math.round(value) : null;
+  if (age !== null) {
+    const err = validateAge(age);
+    setError(ageError, err);
+    if (!err) Patient.age = age;
+  } else {
+    setError(ageError, null);
+  }
+  recalc();
+});
+
+creatinineInput.addEventListener('input', () => {
+  const value = parseNum(creatinineInput.value);
+  if (value !== null) {
+    if (value < 0) {
+      setError(creatinineError, 'Creatinine cannot be negative');
+      serumCreatinine = null;
+    } else if (value > 20) {
+      setError(creatinineError, 'Please verify creatinine value');
+      serumCreatinine = null;
+    } else {
+      setError(creatinineError, null);
+      serumCreatinine = value;
+    }
+  } else {
+    setError(creatinineError, null);
+    serumCreatinine = null;
+  }
+  recalc();
+});
+
+maxClearanceSelect.addEventListener('change', () => {
+  maxClearance = Number(maxClearanceSelect.value);
+  recalc();
+});
+
+targetAucInput.addEventListener('input', () => {
+  const value = parseNum(targetAucInput.value);
+  if (value === null) {
+    targetAucError.hidden = true;
+    return;
+  }
+  if (value < 0) {
+    setError(targetAucError, 'Target AUC cannot be negative');
+  } else if (value > 10) {
+    setError(targetAucError, 'Target AUC must be between 0 and 10');
+  } else {
+    setError(targetAucError, null);
+  }
+  targetAUC = value;
+  recalc();
+});
+
+renderWeightInput(weightContainer, recalc);
+renderSexToggle(sexContainer, recalc);
+recalc();
+
+wireResetButton(document.getElementById('resetBtn'), () => {
+  Patient.reset();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANC Calculator - Onc Tools</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="js/state.js"></script>
+<script src="js/ui.js"></script>
+<script>initChrome();</script>
+</head>
+<body>
+<div class="page">
+  <header class="topbar">
+    <a class="back" href="misc.html">‹ Back</a>
+    <h1>ANC Calculator</h1>
+    <button class="reset-btn" id="resetBtn">Reset</button>
+  </header>
+  <main>
+    <div class="card">
+      <div class="card-header">Lab Values</div>
+
+      <div class="field-row">
+        <span class="field-label">WBC <span class="field-unit">(K/µL)</span></span>
+        <div class="field-input-group"><input class="num-input" id="wbcInput" inputmode="decimal" placeholder="WBC"></div>
+      </div>
+      <div class="error-text" id="wbcError" hidden></div>
+
+      <div class="field-row">
+        <span class="field-label">Neutrophils <span class="field-unit">(%)</span></span>
+        <div class="field-input-group"><input class="num-input" id="neutrophilsInput" inputmode="decimal" placeholder="Neutrophils"></div>
+      </div>
+      <div class="error-text" id="neutrophilsError" hidden></div>
+
+      <div class="field-row">
+        <span class="field-label">Bands <span class="field-unit">(%)</span></span>
+        <div class="field-input-group"><input class="num-input" id="bandsInput" inputmode="decimal" placeholder="Bands"></div>
+      </div>
+      <div class="error-text" id="bandsError" hidden></div>
+
+      <div class="warning-text" id="totalWarning" hidden></div>
+      <div class="hint-text" id="totalHint" hidden></div>
+    </div>
+
+    <div class="card">
+      <div class="result-row">
+        <span>Absolute Neutrophil Count</span>
+        <span class="value"><span id="ancValue">-</span><span class="unit" id="ancUnit"></span></span>
+      </div>
+      <div class="card-footer">ANC = WBC × ((Neutrophils + Bands) / 100)</div>
+    </div>
+  </main>
+</div>
+
+<script>
+const wbcInput = document.getElementById('wbcInput');
+const neutrophilsInput = document.getElementById('neutrophilsInput');
+const bandsInput = document.getElementById('bandsInput');
+const wbcError = document.getElementById('wbcError');
+const neutrophilsError = document.getElementById('neutrophilsError');
+const bandsError = document.getElementById('bandsError');
+const totalWarning = document.getElementById('totalWarning');
+const totalHint = document.getElementById('totalHint');
+const ancValue = document.getElementById('ancValue');
+const ancUnit = document.getElementById('ancUnit');
+
+let wbc = null, neutrophils = null, bands = null;
+
+function validateTotal() {
+  if (neutrophils !== null && bands !== null) {
+    const total = neutrophils + bands;
+    if (total > 100) {
+      setError(totalWarning, 'Total (Neutrophils + Bands) cannot exceed 100%');
+      totalHint.hidden = true;
+    } else {
+      totalWarning.hidden = true;
+      totalHint.hidden = false;
+      totalHint.textContent = `Total: ${total.toFixed(0)}%`;
+    }
+  } else {
+    totalWarning.hidden = true;
+    totalHint.hidden = true;
+  }
+}
+
+function recalc() {
+  if (wbc !== null && neutrophils !== null && bands !== null) {
+    ancValue.textContent = Formulas.anc(wbc, neutrophils, bands).toFixed(2);
+    ancUnit.textContent = ' K/µL';
+  } else {
+    ancValue.textContent = '-';
+    ancUnit.textContent = '';
+  }
+}
+
+wbcInput.addEventListener('input', () => {
+  wbc = parseNum(wbcInput.value);
+  const v = wbc ?? 0;
+  if (v < 0) setError(wbcError, 'WBC cannot be negative');
+  else if (v > 100) setError(wbcError, 'Please verify WBC value');
+  else setError(wbcError, null);
+  recalc();
+});
+
+neutrophilsInput.addEventListener('input', () => {
+  neutrophils = parseNum(neutrophilsInput.value);
+  const v = neutrophils ?? 0;
+  if (v < 0) setError(neutrophilsError, 'Neutrophils cannot be negative');
+  else if (v > 100) setError(neutrophilsError, 'Neutrophils cannot exceed 100%');
+  else setError(neutrophilsError, null);
+  validateTotal();
+  recalc();
+});
+
+bandsInput.addEventListener('input', () => {
+  bands = parseNum(bandsInput.value);
+  const v = bands ?? 0;
+  if (v < 0) setError(bandsError, 'Bands cannot be negative');
+  else if (v > 100) setError(bandsError, 'Bands cannot exceed 100%');
+  else setError(bandsError, null);
+  validateTotal();
+  recalc();
+});
+
+wireResetButton(document.getElementById('resetBtn'), () => {});
+</script>
+</body>
+</html>

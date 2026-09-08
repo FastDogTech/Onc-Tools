@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Misc Calculators - Onc Tools</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="js/state.js"></script>
+<script src="js/ui.js"></script>
+<script>initChrome();</script>
+</head>
+<body>
+<div class="page">
+  <header class="topbar">
+    <a class="back" href="index.html">‹ Home</a>
+    <h1>Misc Calculators</h1>
+    <button class="reset-btn" id="resetBtn">Reset</button>
+  </header>
+  <main>
+    <div class="card">
+      <div class="card-header">Labs</div>
+      <a class="link-row" href="anc.html">Absolute Neutrophil Count</a>
+      <a class="link-row" href="calcium.html">Corrected Calcium</a>
+      <a class="link-row" href="gfr.html">Creatinine Clearance / eGFR</a>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Conversions</div>
+      <div id="heightContainer"></div>
+      <div id="weightContainer"></div>
+      <div id="tempContainer"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+let temperature = null;
+
+renderHeightInput(document.getElementById('heightContainer'));
+renderWeightInput(document.getElementById('weightContainer'));
+renderTemperatureInput(
+  document.getElementById('tempContainer'),
+  () => temperature,
+  (v) => { temperature = v; }
+);
+
+wireResetButton(document.getElementById('resetBtn'), () => {
+  Patient.height = null;
+  Patient.weight = null;
+  temperature = null;
+});
+</script>
+</body>
+</html>

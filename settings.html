@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings - Onc Tools</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="js/state.js"></script>
+<script src="js/ui.js"></script>
+<script>initChrome();</script>
+</head>
+<body>
+<div class="page">
+  <header class="topbar">
+    <a class="back" href="index.html">‹ Home</a>
+    <h1>Settings</h1>
+    <span style="width:40px"></span>
+  </header>
+  <main>
+    <div class="card">
+      <div class="card-header">Appearance</div>
+      <div class="field-row">
+        <span class="field-label">Accent Color</span>
+        <div class="field-input-group"><strong id="accentLabel"></strong></div>
+      </div>
+      <div class="color-swatches" id="swatches"></div>
+      <div class="field-row">
+        <span class="field-label">Theme</span>
+        <div class="field-input-group">
+          <select class="pill-select" id="themeSelect">
+            <option value="System">System</option>
+            <option value="Light">Light</option>
+            <option value="Dark">Dark</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Defaults</div>
+      <div class="field-row">
+        <span class="field-label">Height Unit</span>
+        <div class="field-input-group"><button class="toggle-btn" id="heightUnitBtn" type="button"></button></div>
+      </div>
+      <div class="field-row">
+        <span class="field-label">Weight Unit</span>
+        <div class="field-input-group"><button class="toggle-btn" id="weightUnitBtn" type="button"></button></div>
+      </div>
+      <div class="field-row">
+        <span class="field-label">Temperature Unit</span>
+        <div class="field-input-group"><button class="toggle-btn" id="tempUnitBtn" type="button"></button></div>
+      </div>
+      <div class="field-row">
+        <span class="field-label">Sex</span>
+        <div class="field-input-group"><button class="toggle-btn" id="sexBtn" type="button"></button></div>
+      </div>
+      <div class="field-row">
+        <span class="field-label">BSA Formula</span>
+        <div class="field-input-group"><button class="toggle-btn" id="bsaFormulaBtn" type="button"></button></div>
+      </div>
+      <div class="field-row">
+        <span class="field-label">Max Cr Clearance</span>
+        <div class="field-input-group">
+          <select class="pill-select" id="maxClearanceSelect">
+            <option value="9999">None</option>
+            <option value="100">100 mL/min</option>
+            <option value="125">125 mL/min</option>
+            <option value="150">150 mL/min</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">About Onc Tools</div>
+      <div style="padding: 0 16px 16px; font-size: 14px; line-height: 1.5; color: var(--text-secondary);">
+        <p>Onc Tools is intended as a reference only for healthcare professionals with common oncology calculations and date management tasks.</p>
+        <p><strong style="color:var(--text)">Disclaimer:</strong> This app is intended for healthcare professionals and should be used as a reference tool only. Always verify calculations and consult appropriate medical guidelines. Always refer to your facility's policies and guidelines.</p>
+        <p>All values you enter stay on this device in your browser's local storage &mdash; nothing is sent to a server.</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const accentLabel = document.getElementById('accentLabel');
+const swatchesEl = document.getElementById('swatches');
+const themeSelect = document.getElementById('themeSelect');
+const heightUnitBtn = document.getElementById('heightUnitBtn');
+const weightUnitBtn = document.getElementById('weightUnitBtn');
+const tempUnitBtn = document.getElementById('tempUnitBtn');
+const sexBtn = document.getElementById('sexBtn');
+const bsaFormulaBtn = document.getElementById('bsaFormulaBtn');
+const maxClearanceSelect = document.getElementById('maxClearanceSelect');
+
+function refresh() {
+  accentLabel.textContent = Settings.accentColor;
+  themeSelect.value = Settings.appTheme;
+  heightUnitBtn.textContent = Settings.defaultHeightUnit === 'Metric' ? 'cm' : 'in';
+  weightUnitBtn.textContent = Settings.defaultWeightUnit === 'Metric' ? 'kg' : 'lbs';
+  tempUnitBtn.textContent = Settings.defaultTemperatureUnit === 'Celsius' ? '°C' : '°F';
+  sexBtn.textContent = Settings.defaultSex;
+  bsaFormulaBtn.textContent = Settings.defaultBSAFormula;
+  maxClearanceSelect.value = String(Settings.maxCreatinineClearance);
+
+  swatchesEl.querySelectorAll('.swatch').forEach(sw => {
+    sw.classList.toggle('selected', sw.dataset.name === Settings.accentColor);
+  });
+}
+
+Object.entries(Settings.accentColors).forEach(([name, hex]) => {
+  const sw = el('button', { type: 'button', class: 'swatch', 'data-name': name });
+  sw.style.background = hex;
+  sw.title = name;
+  sw.addEventListener('click', () => {
+    Settings.accentColor = name;
+    applyAccentColor();
+    refresh();
+  });
+  swatchesEl.appendChild(sw);
+});
+
+themeSelect.addEventListener('change', () => {
+  Settings.appTheme = themeSelect.value;
+  applyTheme();
+});
+
+heightUnitBtn.addEventListener('click', () => {
+  Settings.defaultHeightUnit = Settings.defaultHeightUnit === 'Metric' ? 'Imperial' : 'Metric';
+  UnitManager.heightUnit = Settings.defaultHeightUnit;
+  refresh();
+});
+
+weightUnitBtn.addEventListener('click', () => {
+  Settings.defaultWeightUnit = Settings.defaultWeightUnit === 'Metric' ? 'Imperial' : 'Metric';
+  UnitManager.weightUnit = Settings.defaultWeightUnit;
+  refresh();
+});
+
+tempUnitBtn.addEventListener('click', () => {
+  Settings.defaultTemperatureUnit = Settings.defaultTemperatureUnit === 'Celsius' ? 'Fahrenheit' : 'Celsius';
+  UnitManager.temperatureUnit = Settings.defaultTemperatureUnit;
+  refresh();
+});
+
+sexBtn.addEventListener('click', () => {
+  Settings.defaultSex = Settings.defaultSex === 'Male' ? 'Female' : 'Male';
+  Patient.sex = Settings.defaultSex;
+  refresh();
+});
+
+bsaFormulaBtn.addEventListener('click', () => {
+  Settings.defaultBSAFormula = Settings.defaultBSAFormula === 'Dubois' ? 'Mosteller' : 'Dubois';
+  refresh();
+});
+
+maxClearanceSelect.addEventListener('change', () => {
+  Settings.maxCreatinineClearance = Number(maxClearanceSelect.value);
+});
+
+refresh();
+</script>
+</body>
+</html>

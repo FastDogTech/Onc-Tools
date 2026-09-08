@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creatinine Clearance / eGFR - Onc Tools</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="js/state.js"></script>
+<script src="js/ui.js"></script>
+<script>initChrome();</script>
+</head>
+<body>
+<div class="page">
+  <header class="topbar">
+    <a class="back" href="misc.html">‹ Back</a>
+    <h1>CrCl / eGFR</h1>
+    <button class="reset-btn" id="resetBtn">Reset</button>
+  </header>
+  <main>
+    <div class="card">
+      <div class="card-header">Patient Information</div>
+
+      <div class="field-row">
+        <span class="field-label">Age</span>
+        <div class="field-input-group">
+          <input class="num-input" id="ageInput" inputmode="numeric" placeholder="Age" style="width:60px">
+          <span class="field-unit">yrs</span>
+        </div>
+      </div>
+      <div class="error-text" id="ageError" hidden></div>
+
+      <div id="weightContainer"></div>
+      <div id="sexContainer"></div>
+
+      <div class="field-row">
+        <span class="field-label">Serum Creatinine <span class="field-unit">(mg/dL)</span></span>
+        <div class="field-input-group"><input class="num-input" id="creatinineInput" inputmode="decimal" placeholder="Creatinine"></div>
+      </div>
+      <div class="error-text" id="creatinineError" hidden></div>
+    </div>
+
+    <div class="card">
+      <div class="result-row">
+        <span>Creatinine Clearance</span>
+        <span class="value"><span id="crclValue">-</span><span class="unit" id="crclUnit"></span></span>
+      </div>
+      <div class="card-footer">Cockcroft-Gault: CrCl = ((140 - age) × weight × (0.85 if female)) / (72 × SCr)</div>
+    </div>
+
+    <div class="card">
+      <div class="result-row">
+        <span>eGFR</span>
+        <span class="value"><span id="gfrValue">-</span><span class="unit" id="gfrUnit"></span></span>
+      </div>
+      <div class="card-footer">MDRD: GFR = 175 × (SCr)^-1.154 × (Age)^-0.203 × (0.742 if female)</div>
+    </div>
+  </main>
+</div>
+
+<script>
+const ageInput = document.getElementById('ageInput');
+const ageError = document.getElementById('ageError');
+const weightContainer = document.getElementById('weightContainer');
+const sexContainer = document.getElementById('sexContainer');
+const creatinineInput = document.getElementById('creatinineInput');
+const creatinineError = document.getElementById('creatinineError');
+const crclValue = document.getElementById('crclValue');
+const crclUnit = document.getElementById('crclUnit');
+const gfrValue = document.getElementById('gfrValue');
+const gfrUnit = document.getElementById('gfrUnit');
+
+let age = null;
+let serumCreatinine = null;
+
+function recalc() {
+  const hasCrcl = age !== null && Patient.weight !== null && serumCreatinine !== null && serumCreatinine > 0;
+  if (hasCrcl) {
+    crclValue.textContent = Formulas.cockcroftGault(age, Patient.weight, serumCreatinine, Patient.sex).toFixed(1);
+    crclUnit.textContent = ' mL/min';
+  } else {
+    crclValue.textContent = '-';
+    crclUnit.textContent = '';
+  }
+
+  const hasGfr = age !== null && serumCreatinine !== null;
+  if (hasGfr) {
+    gfrValue.textContent = Formulas.mdrdGFR(serumCreatinine, age, Patient.sex).toFixed(1);
+    gfrUnit.textContent = ' mL/min/1.73m²';
+  } else {
+    gfrValue.textContent = '-';
+    gfrUnit.textContent = '';
+  }
+}
+
+ageInput.addEventListener('input', () => {
+  const value = parseNum(ageInput.value);
+  age = value !== null ? Math.round(value) : null;
+  if (age !== null) {
+    if (age < 18) setError(ageError, 'Age must be 18 or older for accurate results');
+    else if (age > 120) setError(ageError, 'Please verify age');
+    else setError(ageError, null);
+  } else {
+    setError(ageError, null);
+  }
+  recalc();
+});
+
+creatinineInput.addEventListener('input', () => {
+  serumCreatinine = parseNum(creatinineInput.value);
+  const v = serumCreatinine ?? 0;
+  if (v < 0) setError(creatinineError, 'Creatinine cannot be negative');
+  else if (v > 20) setError(creatinineError, 'Please verify creatinine value');
+  else setError(creatinineError, null);
+  recalc();
+});
+
+renderWeightInput(weightContainer, recalc);
+renderSexToggle(sexContainer, recalc);
+recalc();
+
+wireResetButton(document.getElementById('resetBtn'), () => {
+  Patient.weight = null;
+});
+</script>
+</body>
+</html>

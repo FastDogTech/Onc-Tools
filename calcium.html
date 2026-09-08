@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corrected Calcium - Onc Tools</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="js/state.js"></script>
+<script src="js/ui.js"></script>
+<script>initChrome();</script>
+</head>
+<body>
+<div class="page">
+  <header class="topbar">
+    <a class="back" href="misc.html">‹ Back</a>
+    <h1>Corrected Calcium</h1>
+    <button class="reset-btn" id="resetBtn">Reset</button>
+  </header>
+  <main>
+    <div class="card">
+      <div class="card-header">Lab Values</div>
+
+      <div class="field-row">
+        <span class="field-label">Serum Calcium <span class="field-unit">(mg/dL)</span></span>
+        <div class="field-input-group"><input class="num-input" id="calciumInput" inputmode="decimal" placeholder="Calcium"></div>
+      </div>
+      <div class="error-text" id="calciumError" hidden></div>
+
+      <div class="field-row">
+        <span class="field-label">Albumin <span class="field-unit">(g/dL)</span></span>
+        <div class="field-input-group"><input class="num-input" id="albuminInput" inputmode="decimal" placeholder="Albumin"></div>
+      </div>
+      <div class="error-text" id="albuminError" hidden></div>
+    </div>
+
+    <div class="card">
+      <div class="result-row">
+        <span>Corrected Calcium</span>
+        <span class="value"><span id="calciumValue">Enter values</span><span class="unit" id="calciumUnit"></span></span>
+      </div>
+      <div class="card-footer">Corrected Ca = Serum Ca + 0.8 × (4.0 - Albumin)</div>
+    </div>
+  </main>
+</div>
+
+<script>
+const calciumInput = document.getElementById('calciumInput');
+const albuminInput = document.getElementById('albuminInput');
+const calciumError = document.getElementById('calciumError');
+const albuminError = document.getElementById('albuminError');
+const calciumValue = document.getElementById('calciumValue');
+const calciumUnit = document.getElementById('calciumUnit');
+
+function refresh() {
+  calciumInput.value = Patient.serumCalcium ?? '';
+  albuminInput.value = Patient.albumin ?? '';
+  recalc();
+}
+
+function recalc() {
+  if (Patient.serumCalcium !== null && Patient.albumin !== null) {
+    calciumValue.textContent = Formulas.correctedCalcium(Patient.serumCalcium, Patient.albumin).toFixed(2);
+    calciumUnit.textContent = ' mg/dL';
+  } else {
+    calciumValue.textContent = 'Enter values';
+    calciumUnit.textContent = '';
+  }
+}
+
+calciumInput.addEventListener('input', () => {
+  const value = parseNum(calciumInput.value);
+  Patient.serumCalcium = value;
+  if (value !== null) {
+    if (value < 0) setError(calciumError, 'Calcium cannot be negative');
+    else if (value > 25) setError(calciumError, 'Please verify calcium value');
+    else setError(calciumError, null);
+  } else {
+    setError(calciumError, null);
+  }
+  recalc();
+});
+
+albuminInput.addEventListener('input', () => {
+  const value = parseNum(albuminInput.value);
+  Patient.albumin = value;
+  if (value !== null) {
+    if (value < 3) setError(albuminError, 'Corrected Ca is unreliable with an albumin < 3');
+    else if (value > 5) setError(albuminError, 'Corrected Ca should not be used with an albumin > 5');
+    else setError(albuminError, null);
+  } else {
+    setError(albuminError, null);
+  }
+  recalc();
+});
+
+refresh();
+
+wireResetButton(document.getElementById('resetBtn'), () => {
+  Patient.serumCalcium = null;
+  Patient.albumin = null;
+});
+</script>
+</body>
+</html>
