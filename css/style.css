@@ -454,27 +454,9 @@ select.pill-select {
   background: color-mix(in srgb, var(--accent) 65%, var(--surface));
   color: #ffffff;
   margin-bottom: 16px;
-}
-
-.date-result .sentence {
-  display: block;
-  font-size: 13px;
-  opacity: 0.85;
-  margin-bottom: 8px;
-}
-
-.date-result .day {
-  font-size: 20px;
-  font-weight: 700;
-  display: block;
-  margin-bottom: 4px;
-}
-
-.date-result .datetime {
-  font-size: 26px;
+  font-size: 16px;
   font-weight: 600;
-  display: flex;
-  justify-content: space-between;
+  line-height: 1.4;
 }
 
 .formula-note {

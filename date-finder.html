@@ -35,12 +35,7 @@
     </div>
 
     <div class="date-result">
-      <span class="sentence" id="sentence"></span>
-      <span class="day" id="resultDay"></span>
-      <div class="datetime">
-        <span id="resultDate"></span>
-        <span id="resultTime"></span>
-      </div>
+      <span id="resultLine"></span>
     </div>
     <div id="resetContainer"></div>
   </main>
@@ -50,10 +45,7 @@
 renderHeader(document.getElementById('pageHeader'), { active: 'date-finder' });
 renderResetButton(document.getElementById('resetContainer'), () => { saveValue('timeMode', 'weeks'); });
 
-const sentence = document.getElementById('sentence');
-const resultDay = document.getElementById('resultDay');
-const resultDate = document.getElementById('resultDate');
-const resultTime = document.getElementById('resultTime');
+const resultLine = document.getElementById('resultLine');
 const pastBtn = document.getElementById('pastBtn');
 const futureBtn = document.getElementById('futureBtn');
 const incrementInput = document.getElementById('incrementInput');
@@ -107,11 +99,12 @@ function recalc() {
   const timeVal = timeDirection === 'past' ? -timeIncrement : timeIncrement;
   const result = addToDate(startDate, timePeriod, timeVal);
 
-  resultDay.textContent = result.toLocaleDateString('en-US', { weekday: 'long' });
-  resultDate.textContent = result.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  resultTime.textContent = timePeriod === 'hours' ? result.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
+  const dayOfWeek = result.toLocaleDateString('en-US', { weekday: 'long' });
+  const dateStr = result.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const timeStr = timePeriod === 'hours' ? ', ' + result.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
 
-  sentence.textContent = `${timeIncrement} ${pluralizedTimePeriod()} ${timeDirection === 'past' ? 'before' : 'from'} ${formattedStartDate()} is:`;
+  const sentencePart = `${timeIncrement} ${pluralizedTimePeriod()} ${timeDirection === 'past' ? 'before' : 'from'} ${formattedStartDate()} is`;
+  resultLine.textContent = `${sentencePart} ${dayOfWeek}, ${dateStr}${timeStr}.`;
 
   pastBtn.classList.toggle('active-period', timeDirection === 'past');
   futureBtn.classList.toggle('active-period', timeDirection === 'future');
