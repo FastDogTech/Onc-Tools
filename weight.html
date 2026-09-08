@@ -14,7 +14,6 @@
   <div id="pageHeader"></div>
   <main>
     <div class="card">
-      <div class="card-header">Patient Information</div>
       <div id="heightContainer"></div>
       <div id="weightContainer"></div>
       <div id="sexContainer"></div>
@@ -34,15 +33,18 @@
     </div>
 
     <div class="card">
-      <div class="card-header">Calculator</div>
-      <div class="calc-row">
-        <span id="calcWeight">0.0 kg</span>
-        <span class="op">×</span>
-        <input class="num-input" id="multiplierInput" inputmode="decimal" placeholder="Amount">
-        <span class="op">=</span>
-        <span class="result" id="calcResult">0.0</span>
+      <div class="field-row">
+        <span class="field-label">Dose</span>
+        <div class="field-input-group"><input class="num-input" id="doseInput" inputmode="decimal" placeholder="Dose"></div>
       </div>
-      <div class="error-text" id="multiplierError" hidden></div>
+      <div class="error-text" id="doseError" hidden></div>
+    </div>
+
+    <div class="card">
+      <div class="result-row">
+        <span>Result</span>
+        <span class="value"><span id="calcResult">-</span></span>
+      </div>
     </div>
     <div id="resetContainer"></div>
   </main>
@@ -57,14 +59,13 @@ const weightContainer = document.getElementById('weightContainer');
 const sexContainer = document.getElementById('sexContainer');
 const weightTypeLabel = document.getElementById('weightTypeLabel');
 const weightTypeValue = document.getElementById('weightTypeValue');
-const calcWeight = document.getElementById('calcWeight');
-const multiplierInput = document.getElementById('multiplierInput');
+const doseInput = document.getElementById('doseInput');
 const calcResult = document.getElementById('calcResult');
-const multiplierError = document.getElementById('multiplierError');
+const doseError = document.getElementById('doseError');
 const segmentedButtons = document.querySelectorAll('#segmented button');
 
 let selectedType = 'Actual';
-let multiplier = null;
+let dose = null;
 let sexWidget = null;
 
 function currentWeightKg() {
@@ -83,15 +84,14 @@ function recalc() {
   const label = selectedType + ' Body Weight';
   weightTypeLabel.textContent = label;
   weightTypeValue.textContent = display.toFixed(1) + ' ' + UnitManager.weightUnitLabel;
-  calcWeight.textContent = display.toFixed(1) + ' ' + UnitManager.weightUnitLabel;
 
   segmentedButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.type === selectedType));
   refreshSexVisibility();
 
-  if (multiplier !== null && weightKg > 0) {
-    calcResult.textContent = (multiplier * display).toFixed(1);
+  if (dose !== null && weightKg > 0) {
+    calcResult.textContent = (dose * display).toFixed(1);
   } else {
-    calcResult.textContent = '0.0';
+    calcResult.textContent = '-';
   }
 }
 
@@ -102,25 +102,25 @@ segmentedButtons.forEach(btn => {
   });
 });
 
-multiplierInput.addEventListener('input', () => {
-  const value = parseNum(multiplierInput.value);
+doseInput.addEventListener('input', () => {
+  const value = parseNum(doseInput.value);
   if (value !== null) {
     if (value < 0) {
-      setError(multiplierError, 'Multiplier cannot be negative');
-      multiplier = null;
+      setError(doseError, 'Dose cannot be negative');
+      dose = null;
     } else if (value > 10000) {
-      setError(multiplierError, 'Multiplier must be less than 10,000');
-      multiplier = null;
+      setError(doseError, 'Dose must be less than 10,000');
+      dose = null;
     } else if (!Number.isFinite(value)) {
-      setError(multiplierError, 'Invalid number entered');
-      multiplier = null;
+      setError(doseError, 'Invalid number entered');
+      dose = null;
     } else {
-      setError(multiplierError, null);
-      multiplier = value;
+      setError(doseError, null);
+      dose = value;
     }
   } else {
-    setError(multiplierError, null);
-    multiplier = null;
+    setError(doseError, null);
+    dose = null;
   }
   recalc();
 });
