@@ -101,7 +101,7 @@ function renderCorrectedCalciumCalculator(container) {
   const albuminInput = numberInput('Albumin');
   const calciumError = errorLine();
   const albuminError = errorLine();
-  const calciumValue = el('span', { text: 'Enter values' });
+  const calciumValue = el('span', { text: '-' });
   const calciumUnit = el('span', { class: 'unit' });
 
   container.appendChild(el('div', { class: 'card no-dividers' }, [
@@ -129,7 +129,7 @@ function renderCorrectedCalciumCalculator(container) {
       calciumValue.textContent = Formulas.correctedCalcium(Patient.serumCalcium, Patient.albumin).toFixed(2);
       calciumUnit.textContent = ' mg/dL';
     } else {
-      calciumValue.textContent = 'Enter values';
+      calciumValue.textContent = '-';
       calciumUnit.textContent = '';
     }
   }
