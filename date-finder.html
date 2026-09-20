@@ -19,8 +19,8 @@
 <div class="page">
   <div id="pageHeader"></div>
   <nav class="subtabbar">
-    <button class="subtab" type="button" id="adjustTab">Adjust Date</button>
     <button class="subtab" type="button" id="betweenTab">Between Dates</button>
+    <button class="subtab" type="button" id="adjustTab">Find Date</button>
   </nav>
   <main>
     <div id="adjustPanel" hidden>
@@ -35,12 +35,10 @@
       </div>
 
       <div class="card no-dividers">
-        <div style="padding:12px 16px 0;">
-          <span class="field-label">Adjust By</span>
-        </div>
-        <div class="field-row" style="justify-content:center; gap:8px; flex-wrap:wrap;">
-          <input class="num-input" id="incrementInput" inputmode="numeric" style="width:70px; text-align:center;" value="1">
-          <div class="segmented-inline" id="periodSegmented">
+        <div class="field-row" style="justify-content:flex-start; gap:16px; flex-wrap:wrap;">
+          <span class="field-label">Show</span>
+          <input class="num-input" id="incrementInput" inputmode="numeric" style="width:70px; height:38px; box-sizing:border-box; text-align:center;" value="1">
+          <div class="segmented-inline equal-width" id="periodSegmented">
             <button data-period="hours" type="button">Hours</button>
             <button data-period="days" type="button">Days</button>
             <button data-period="weeks" type="button">Weeks</button>
@@ -48,8 +46,9 @@
           </div>
         </div>
         <div class="error-text" id="incrementError" hidden></div>
-        <div class="field-row" style="justify-content:center;">
-          <div class="segmented-inline" id="directionSegmented">
+        <div class="field-row" style="justify-content:flex-start; gap:16px;">
+          <span class="field-label">In the</span>
+          <div class="segmented-inline equal-width" id="directionSegmented">
             <button data-direction="past" type="button">Past</button>
             <button data-direction="future" type="button">Future</button>
           </div>

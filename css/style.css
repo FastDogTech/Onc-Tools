@@ -258,6 +258,8 @@ main {
 
 .toggle-btn {
   min-width: 64px;
+  height: 38px;
+  box-sizing: border-box;
   padding: 6px 12px;
   border-radius: 8px;
   border: none;
@@ -331,6 +333,8 @@ main {
 }
 
 .segmented-inline button {
+  height: 38px;
+  box-sizing: border-box;
   padding: 6px 10px;
   border-radius: 8px;
   border: none;
@@ -346,6 +350,10 @@ main {
   color: #ffffff;
 }
 
+.segmented-inline.equal-width button {
+  min-width: 70px;
+}
+
 .subtabbar {
   display: flex;
   flex-wrap: wrap;
@@ -355,6 +363,8 @@ main {
 
 .subtab {
   flex: 0 0 auto;
+  height: 38px;
+  box-sizing: border-box;
   padding: 8px 16px;
   border: none;
   border-radius: 20px;
