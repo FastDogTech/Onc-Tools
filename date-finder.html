@@ -18,43 +18,73 @@
 <body>
 <div class="page">
   <div id="pageHeader"></div>
+  <nav class="subtabbar">
+    <button class="subtab" type="button" id="adjustTab">Adjust Date</button>
+    <button class="subtab" type="button" id="betweenTab">Between Dates</button>
+  </nav>
   <main>
-    <div class="card">
-      <div style="padding:16px;">
-        <span class="field-label" style="display:block; margin-bottom:8px;">Starting Date</span>
-        <div style="display:flex; gap:8px; align-items:center;">
-          <input class="date-picker-input" id="startDateInput" type="datetime-local" style="flex:1;">
-          <button class="toggle-btn" id="todayBtn" type="button">Today</button>
+    <div id="adjustPanel">
+      <div class="card">
+        <div style="padding:16px;">
+          <span class="field-label" style="display:block; margin-bottom:8px;">Starting Date</span>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <input class="date-picker-input" id="startDateInput" type="datetime-local" style="flex:1;">
+            <button class="toggle-btn" id="todayBtn" type="button">Today</button>
+          </div>
         </div>
+      </div>
+
+      <div class="card no-dividers">
+        <div style="padding:12px 16px 0;">
+          <span class="field-label">Adjust By</span>
+        </div>
+        <div class="field-row" style="justify-content:center; gap:8px; flex-wrap:wrap;">
+          <input class="num-input" id="incrementInput" inputmode="numeric" style="width:70px; text-align:center;" value="1">
+          <div class="segmented-inline" id="periodSegmented">
+            <button data-period="hours" type="button">Hours</button>
+            <button data-period="days" type="button">Days</button>
+            <button data-period="weeks" type="button">Weeks</button>
+            <button data-period="months" type="button">Months</button>
+          </div>
+        </div>
+        <div class="error-text" id="incrementError" hidden></div>
+        <div class="field-row" style="justify-content:center;">
+          <div class="segmented-inline" id="directionSegmented">
+            <button data-direction="past" type="button">Past</button>
+            <button data-direction="future" type="button">Future</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="date-result">
+        <span class="day" id="resultDay"></span>
+        <span class="date" id="resultDate"></span>
       </div>
     </div>
 
-    <div class="card no-dividers">
-      <div style="padding:12px 16px 0;">
-        <span class="field-label">Adjust By</span>
-      </div>
-      <div class="field-row" style="justify-content:center; gap:8px; flex-wrap:wrap;">
-        <input class="num-input" id="incrementInput" inputmode="numeric" style="width:70px; text-align:center;" value="1">
-        <div class="segmented-inline" id="periodSegmented">
-          <button data-period="hours" type="button">Hours</button>
-          <button data-period="days" type="button">Days</button>
-          <button data-period="weeks" type="button">Weeks</button>
-          <button data-period="months" type="button">Months</button>
+    <div id="betweenPanel" hidden>
+      <div class="card">
+        <div style="padding:16px;">
+          <span class="field-label" style="display:block; margin-bottom:8px;">Date A</span>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <input class="date-picker-input" id="dateAInput" type="date" style="flex:1;">
+            <button class="toggle-btn" id="dateATodayBtn" type="button">Today</button>
+          </div>
+        </div>
+        <div style="padding:16px; border-top:1px solid var(--border);">
+          <span class="field-label" style="display:block; margin-bottom:8px;">Date B</span>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <input class="date-picker-input" id="dateBInput" type="date" style="flex:1;">
+            <button class="toggle-btn" id="dateBTodayBtn" type="button">Today</button>
+          </div>
         </div>
       </div>
-      <div class="error-text" id="incrementError" hidden></div>
-      <div class="field-row" style="justify-content:center;">
-        <div class="segmented-inline" id="directionSegmented">
-          <button data-direction="past" type="button">Past</button>
-          <button data-direction="future" type="button">Future</button>
-        </div>
+
+      <div class="date-result">
+        <div class="date-result-lines" id="betweenResultLines"></div>
       </div>
     </div>
 
-    <div class="date-result">
-      <span class="day" id="resultDay"></span>
-      <span class="date" id="resultDate"></span>
-    </div>
     <div id="resetContainer"></div>
   </main>
 </div>
@@ -63,88 +93,208 @@
 renderHeader(document.getElementById('pageHeader'), { active: 'date-finder' });
 renderResetButton(document.getElementById('resetContainer'), () => { saveValue('timeMode', 'weeks'); });
 
-const resultDay = document.getElementById('resultDay');
-const resultDate = document.getElementById('resultDate');
-const directionButtons = document.querySelectorAll('#directionSegmented button');
-const incrementInput = document.getElementById('incrementInput');
-const incrementError = document.getElementById('incrementError');
-const periodButtons = document.querySelectorAll('#periodSegmented button');
-const startDateInput = document.getElementById('startDateInput');
-const todayBtn = document.getElementById('todayBtn');
-
-let startDate = new Date();
-let timeIncrement = 1;
-let timeDirection = 'future';
-let timePeriod = loadValue('timeMode', 'weeks');
-
 function toLocalInputValue(date) {
   const pad = n => String(n).padStart(2, '0');
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
-startDateInput.value = toLocalInputValue(startDate);
 
-function addToDate(date, period, amount) {
-  const result = new Date(date);
-  switch (period) {
-    case 'hours': result.setHours(result.getHours() + amount); break;
-    case 'days': result.setDate(result.getDate() + amount); break;
-    case 'weeks': result.setDate(result.getDate() + amount * 7); break;
-    case 'months': result.setMonth(result.getMonth() + amount); break;
-  }
-  return result;
+function toDateInputValue(date) {
+  const pad = n => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
 
-function recalc() {
-  const timeVal = timeDirection === 'past' ? -timeIncrement : timeIncrement;
-  const result = addToDate(startDate, timePeriod, timeVal);
-
-  const timeStr = timePeriod === 'hours' ? ', ' + result.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
-
-  resultDay.textContent = result.toLocaleDateString('en-US', { weekday: 'long' });
-  resultDate.textContent = result.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + timeStr;
-
-  directionButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.direction === timeDirection));
-  periodButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.period === timePeriod));
+function parseDateInput(str) {
+  const [y, m, d] = str.split('-').map(Number);
+  return new Date(y, m - 1, d);
 }
 
-directionButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    timeDirection = btn.dataset.direction;
-    recalc();
-  });
-});
+function renderAdjustPanel(container) {
+  const resultDay = container.querySelector('#resultDay');
+  const resultDate = container.querySelector('#resultDate');
+  const directionButtons = container.querySelectorAll('#directionSegmented button');
+  const incrementInput = container.querySelector('#incrementInput');
+  const incrementError = container.querySelector('#incrementError');
+  const periodButtons = container.querySelectorAll('#periodSegmented button');
+  const startDateInput = container.querySelector('#startDateInput');
+  const todayBtn = container.querySelector('#todayBtn');
 
-periodButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    timePeriod = btn.dataset.period;
-    saveValue('timeMode', timePeriod);
-    recalc();
-  });
-});
+  let startDate = new Date();
+  let timeIncrement = 1;
+  let timeDirection = 'future';
+  let timePeriod = loadValue('timeMode', 'weeks');
 
-incrementInput.addEventListener('input', () => {
-  const value = parseNum(incrementInput.value);
-  timeIncrement = value !== null ? Math.round(value) : 0;
-  if (timeIncrement < 1) setError(incrementError, 'Value must be greater than 0');
-  else if (timeIncrement > 1000) setError(incrementError, 'Please verify value');
-  else setError(incrementError, null);
-  recalc();
-});
-
-startDateInput.addEventListener('input', () => {
-  if (startDateInput.value) {
-    startDate = new Date(startDateInput.value);
-    recalc();
-  }
-});
-
-todayBtn.addEventListener('click', () => {
-  startDate = new Date();
   startDateInput.value = toLocalInputValue(startDate);
-  recalc();
-});
 
-recalc();
+  function addToDate(date, period, amount) {
+    const result = new Date(date);
+    switch (period) {
+      case 'hours': result.setHours(result.getHours() + amount); break;
+      case 'days': result.setDate(result.getDate() + amount); break;
+      case 'weeks': result.setDate(result.getDate() + amount * 7); break;
+      case 'months': result.setMonth(result.getMonth() + amount); break;
+    }
+    return result;
+  }
+
+  function recalc() {
+    const timeVal = timeDirection === 'past' ? -timeIncrement : timeIncrement;
+    const result = addToDate(startDate, timePeriod, timeVal);
+
+    const timeStr = timePeriod === 'hours' ? ', ' + result.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
+
+    resultDay.textContent = result.toLocaleDateString('en-US', { weekday: 'long' });
+    resultDate.textContent = result.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + timeStr;
+
+    directionButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.direction === timeDirection));
+    periodButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.period === timePeriod));
+  }
+
+  directionButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      timeDirection = btn.dataset.direction;
+      recalc();
+    });
+  });
+
+  periodButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      timePeriod = btn.dataset.period;
+      saveValue('timeMode', timePeriod);
+      recalc();
+    });
+  });
+
+  incrementInput.addEventListener('input', () => {
+    const value = parseNum(incrementInput.value);
+    timeIncrement = value !== null ? Math.round(value) : 0;
+    if (timeIncrement < 1) setError(incrementError, 'Value must be greater than 0');
+    else if (timeIncrement > 1000) setError(incrementError, 'Please verify value');
+    else setError(incrementError, null);
+    recalc();
+  });
+
+  startDateInput.addEventListener('input', () => {
+    if (startDateInput.value) {
+      startDate = new Date(startDateInput.value);
+      recalc();
+    }
+  });
+
+  todayBtn.addEventListener('click', () => {
+    startDate = new Date();
+    startDateInput.value = toLocalInputValue(startDate);
+    recalc();
+  });
+
+  recalc();
+}
+
+function renderBetweenPanel(container) {
+  const dateAInput = container.querySelector('#dateAInput');
+  const dateBInput = container.querySelector('#dateBInput');
+  const todayABtn = container.querySelector('#dateATodayBtn');
+  const todayBBtn = container.querySelector('#dateBTodayBtn');
+  const resultLines = container.querySelector('#betweenResultLines');
+
+  function startOfDay(date) {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+
+  let dateA = startOfDay(new Date());
+  let dateB = startOfDay(new Date());
+  dateAInput.value = toDateInputValue(dateA);
+  dateBInput.value = toDateInputValue(dateB);
+
+  function pluralize(n, unit) {
+    return `${n} ${unit}${n === 1 ? '' : 's'}`;
+  }
+
+  // Joins the given [value, unit] pairs, dropping any that are zero.
+  function compoundLine(parts) {
+    return parts.filter(([n]) => n > 0).map(([n, unit]) => pluralize(n, unit)).join(', ');
+  }
+
+  function calendarYears(earlier, later) {
+    let years = later.getFullYear() - earlier.getFullYear();
+    const anchor = new Date(earlier);
+    anchor.setFullYear(earlier.getFullYear() + years);
+    if (anchor > later) years -= 1;
+    return years;
+  }
+
+  function recalcBetween() {
+    const earlier = dateA <= dateB ? dateA : dateB;
+    const later = dateA <= dateB ? dateB : dateA;
+    const totalDays = Math.round((later - earlier) / 86400000);
+    const years = calendarYears(earlier, later);
+    const totalWeeks = Math.floor(totalDays / 7);
+    const weekRemDays = totalDays - totalWeeks * 7;
+
+    const lines = [];
+
+    // Years line: whenever the span covers at least one full year.
+    if (years >= 1) {
+      const anchor = new Date(earlier);
+      anchor.setFullYear(earlier.getFullYear() + years);
+      const remDays = Math.round((later - anchor) / 86400000);
+      const yearWeeks = Math.floor(remDays / 7);
+      const yearDays = remDays - yearWeeks * 7;
+      lines.push(compoundLine([[years, 'year'], [yearWeeks, 'week'], [yearDays, 'day']]));
+    }
+
+    // Weeks line: whenever the span covers at least one full week.
+    if (totalWeeks >= 1) {
+      lines.push(compoundLine([[totalWeeks, 'week'], [weekRemDays, 'day']]));
+    }
+
+    // Days line: the plain total, always shown.
+    lines.push(pluralize(totalDays, 'day'));
+
+    resultLines.innerHTML = '';
+    lines.forEach((text, i) => {
+      const isFirst = i === 0;
+      resultLines.appendChild(el('span', {
+        class: 'date-result-line' + (isFirst ? '' : ' secondary'),
+        text: isFirst ? text : `(${text})`
+      }));
+    });
+  }
+
+  dateAInput.addEventListener('input', () => {
+    if (dateAInput.value) {
+      dateA = parseDateInput(dateAInput.value);
+      recalcBetween();
+    }
+  });
+
+  dateBInput.addEventListener('input', () => {
+    if (dateBInput.value) {
+      dateB = parseDateInput(dateBInput.value);
+      recalcBetween();
+    }
+  });
+
+  todayABtn.addEventListener('click', () => {
+    dateA = startOfDay(new Date());
+    dateAInput.value = toDateInputValue(dateA);
+    recalcBetween();
+  });
+
+  todayBBtn.addEventListener('click', () => {
+    dateB = startOfDay(new Date());
+    dateBInput.value = toDateInputValue(dateB);
+    recalcBetween();
+  });
+
+  recalcBetween();
+}
+
+setupSubtabs([
+  { tabId: 'adjustTab', panelId: 'adjustPanel', renderFn: renderAdjustPanel },
+  { tabId: 'betweenTab', panelId: 'betweenPanel', renderFn: renderBetweenPanel }
+]);
 </script>
 </body>
 </html>

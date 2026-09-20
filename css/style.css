@@ -433,6 +433,21 @@ select.pill-select {
   font-weight: 700;
 }
 
+.date-result-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.date-result-line {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.date-result-line.secondary {
+  font-weight: 400;
+}
+
 .formula-note {
   font-size: 12px;
   color: var(--text-secondary);
