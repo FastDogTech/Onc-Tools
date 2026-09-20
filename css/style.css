@@ -445,6 +445,7 @@ select.pill-select {
 }
 
 .date-result-line.secondary {
+  font-size: 16px;
   font-weight: 400;
 }
 

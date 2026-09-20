@@ -23,7 +23,7 @@
     <button class="subtab" type="button" id="betweenTab">Between Dates</button>
   </nav>
   <main>
-    <div id="adjustPanel">
+    <div id="adjustPanel" hidden>
       <div class="card">
         <div style="padding:16px;">
           <span class="field-label" style="display:block; margin-bottom:8px;">Starting Date</span>
@@ -62,17 +62,17 @@
       </div>
     </div>
 
-    <div id="betweenPanel" hidden>
+    <div id="betweenPanel">
       <div class="card">
         <div style="padding:16px;">
-          <span class="field-label" style="display:block; margin-bottom:8px;">Date A</span>
+          <span class="field-label" style="display:block; margin-bottom:8px;">Start Date</span>
           <div style="display:flex; gap:8px; align-items:center;">
             <input class="date-picker-input" id="dateAInput" type="date" style="flex:1;">
             <button class="toggle-btn" id="dateATodayBtn" type="button">Today</button>
           </div>
         </div>
         <div style="padding:16px; border-top:1px solid var(--border);">
-          <span class="field-label" style="display:block; margin-bottom:8px;">Date B</span>
+          <span class="field-label" style="display:block; margin-bottom:8px;">End Date</span>
           <div style="display:flex; gap:8px; align-items:center;">
             <input class="date-picker-input" id="dateBInput" type="date" style="flex:1;">
             <button class="toggle-btn" id="dateBTodayBtn" type="button">Today</button>
@@ -292,8 +292,8 @@ function renderBetweenPanel(container) {
 }
 
 setupSubtabs([
-  { tabId: 'adjustTab', panelId: 'adjustPanel', renderFn: renderAdjustPanel },
-  { tabId: 'betweenTab', panelId: 'betweenPanel', renderFn: renderBetweenPanel }
+  { tabId: 'betweenTab', panelId: 'betweenPanel', renderFn: renderBetweenPanel },
+  { tabId: 'adjustTab', panelId: 'adjustPanel', renderFn: renderAdjustPanel }
 ]);
 </script>
 </body>
