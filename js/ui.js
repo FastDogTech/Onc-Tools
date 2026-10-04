@@ -19,6 +19,34 @@ function applyAccentColor() {
 function initChrome() {
   applyTheme();
   applyAccentColor();
+  if (location.hostname === 'onctools.fastdog.tech') {
+    document.addEventListener('DOMContentLoaded', showMovedNotice);
+  }
+}
+
+function showMovedNotice() {
+  try { if (sessionStorage.getItem('movedNoticeSeen')) return; } catch (e) {}
+
+  const newUrl = 'https://onctools.com' + location.pathname + location.search + location.hash;
+  const doneBtn = el('button', { type: 'button', class: 'btn-save help-done', text: 'Got it' });
+  const sheet = el('div', { class: 'help-sheet', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Onc Tools has moved' }, [
+    el('div', { class: 'help-title', text: 'Onc Tools has a new home' }),
+    el('div', { class: 'help-text', text: 'Onc Tools is now at onctools.com. This address will keep working for now, but please update your bookmarks and home screen shortcut.' }),
+    el('a', { class: 'btn-save help-done', href: newUrl, text: 'Go to onctools.com', style: 'display:block;text-align:center;text-decoration:none;box-sizing:border-box' }),
+    doneBtn
+  ]);
+  const backdrop = el('div', { class: 'help-backdrop' }, [sheet]);
+
+  function close() {
+    try { sessionStorage.setItem('movedNoticeSeen', '1'); } catch (e) {}
+    document.body.style.overflow = '';
+    backdrop.remove();
+  }
+  backdrop.addEventListener('click', e => { if (e.target === backdrop) close(); });
+  doneBtn.addEventListener('click', close);
+  document.body.style.overflow = 'hidden';
+  document.body.appendChild(backdrop);
+  requestAnimationFrame(() => backdrop.classList.add('open'));
 }
 
 function el(tag, attrs, children) {
