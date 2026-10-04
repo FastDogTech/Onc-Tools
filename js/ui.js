@@ -280,7 +280,7 @@ const HELP = {
       { term: 'ANC', text: 'Calculates the absolute neutrophil count from the white blood cell count and differential.' },
       { term: 'Calcium', text: 'Corrects serum calcium for the albumin level.' },
       { term: 'CrCl / eGFR', text: 'Estimates kidney function from age, weight, sex and serum creatinine. The formulas are shown at the bottom.' },
-      { term: 'Units', text: 'Converts height, weight and temperature. Tap a unit button to switch direction.' },
+      { term: 'Units', text: 'Converts height, weight and temperature. Tap the unit button to switch between metric and imperial.' },
       { term: 'Reset', text: 'Clears the entered values.' }
     ]
   },
