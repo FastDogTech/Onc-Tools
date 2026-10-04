@@ -31,7 +31,7 @@ function showMovedNotice() {
   const doneBtn = el('button', { type: 'button', class: 'btn-save help-done', text: 'Got it' });
   const sheet = el('div', { class: 'help-sheet', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Onc Tools has moved' }, [
     el('div', { class: 'help-title', text: 'Onc Tools has a new home!' }),
-    el('div', { class: 'help-text', text: 'Onc Tools is now at onctools.com. This address will keep working for now, but please update your bookmarks and home screen shortcut.' }),
+    el('div', { class: 'help-text', text: 'Onc Tools is now at onctools.com. This address will keep working for now, but please update your bookmarks and/or home screen shortcut.' }),
     el('a', { class: 'btn-save help-done', href: newUrl, text: 'Go to onctools.com', style: 'display:block;text-align:center;text-decoration:none;box-sizing:border-box' }),
     doneBtn
   ]);
