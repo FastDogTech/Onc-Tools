@@ -65,8 +65,8 @@ let selectedFormula = Settings.defaultBSAFormula;
 let dose = null;
 
 const FORMULA_STRINGS = {
-  Dubois: 'm² = 0.007184 × (height^0.725) × (weight^0.425)',
-  Mosteller: 'm² = √(height × weight) / 3600'
+  Dubois: 'm² = 0.007184 × height<sup>0.725</sup> × weight<sup>0.425</sup>',
+  Mosteller: 'm² = √(height × weight / 3600)'
 };
 
 function currentBSA() {
@@ -79,7 +79,7 @@ function recalc() {
   const bsa = currentBSA();
   bsaValue.textContent = bsa.toFixed(2) + ' m²';
   formulaBtn.textContent = selectedFormula;
-  formulaFooter.textContent = selectedFormula + ': ' + FORMULA_STRINGS[selectedFormula];
+  formulaFooter.innerHTML = selectedFormula + ': ' + FORMULA_STRINGS[selectedFormula];
 
   if (dose !== null && bsa > 0) {
     calcResult.textContent = (bsa * dose).toFixed(2);

@@ -49,10 +49,6 @@
         <div class="field-input-group"><button class="toggle-btn" id="weightUnitBtn" type="button"></button></div>
       </div>
       <div class="field-row">
-        <span class="field-label">Temperature Unit</span>
-        <div class="field-input-group"><button class="toggle-btn" id="tempUnitBtn" type="button"></button></div>
-      </div>
-      <div class="field-row">
         <span class="field-label">Sex</span>
         <div class="field-input-group"><button class="toggle-btn" id="sexBtn" type="button"></button></div>
       </div>
@@ -84,7 +80,8 @@
     <div class="card">
       <div style="padding: 20px 16px; text-align: center;">
         <img src="img/fastdoglogo-240.png" alt="FastDog Tech" style="width: 120px; height: auto;">
-        <p style="margin: 8px 0 0; font-size: 12px; color: var(--text-secondary);">Developed by FastDog Tech / Doug Martin, RN</p>
+        <p style="margin: 8px 0 0; font-size: 12px; color: var(--text-secondary);">Doug Martin, RN</p>
+        <p style="margin: 4px 0 0; font-size: 12px;"><a href="mailto:feedback@fastdog.tech" style="color: var(--accent);">feedback@fastdog.tech</a></p>
       </div>
     </div>
   </main>
@@ -100,7 +97,6 @@ const swatchesEl = document.getElementById('swatches');
 const themeSelect = document.getElementById('themeSelect');
 const heightUnitBtn = document.getElementById('heightUnitBtn');
 const weightUnitBtn = document.getElementById('weightUnitBtn');
-const tempUnitBtn = document.getElementById('tempUnitBtn');
 const sexBtn = document.getElementById('sexBtn');
 const bsaFormulaBtn = document.getElementById('bsaFormulaBtn');
 const maxClearanceSelect = document.getElementById('maxClearanceSelect');
@@ -110,7 +106,6 @@ function refresh() {
   themeSelect.value = Settings.appTheme;
   heightUnitBtn.textContent = Settings.defaultHeightUnit === 'Metric' ? 'cm' : 'in';
   weightUnitBtn.textContent = Settings.defaultWeightUnit === 'Metric' ? 'kg' : 'lbs';
-  tempUnitBtn.textContent = Settings.defaultTemperatureUnit === 'Celsius' ? '°C' : '°F';
   sexBtn.textContent = Settings.defaultSex;
   bsaFormulaBtn.textContent = Settings.defaultBSAFormula;
   maxClearanceSelect.value = String(Settings.maxCreatinineClearance);
@@ -146,12 +141,6 @@ heightUnitBtn.addEventListener('click', () => {
 weightUnitBtn.addEventListener('click', () => {
   Settings.defaultWeightUnit = Settings.defaultWeightUnit === 'Metric' ? 'Imperial' : 'Metric';
   UnitManager.weightUnit = Settings.defaultWeightUnit;
-  refresh();
-});
-
-tempUnitBtn.addEventListener('click', () => {
-  Settings.defaultTemperatureUnit = Settings.defaultTemperatureUnit === 'Celsius' ? 'Fahrenheit' : 'Celsius';
-  UnitManager.temperatureUnit = Settings.defaultTemperatureUnit;
   refresh();
 });
 

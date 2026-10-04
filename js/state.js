@@ -53,9 +53,6 @@ const Settings = {
   get defaultWeightUnit() { return loadValue('defaultWeightUnit', 'Metric'); },
   set defaultWeightUnit(v) { saveValue('defaultWeightUnit', v); },
 
-  get defaultTemperatureUnit() { return loadValue('defaultTemperatureUnit', 'Celsius'); },
-  set defaultTemperatureUnit(v) { saveValue('defaultTemperatureUnit', v); },
-
   get defaultSex() { return loadValue('defaultSex', 'Male'); },
   set defaultSex(v) { saveValue('defaultSex', v); },
 
@@ -73,7 +70,7 @@ const UnitManager = {
   get weightUnit() { return loadValue('weightUnit', Settings.defaultWeightUnit); },
   set weightUnit(v) { saveValue('weightUnit', v); },
 
-  get temperatureUnit() { return loadValue('temperatureUnit', Settings.defaultTemperatureUnit); },
+  get temperatureUnit() { return loadValue('temperatureUnit', 'Celsius'); },
   set temperatureUnit(v) { saveValue('temperatureUnit', v); },
 
   cmToInch: 0.393701,
