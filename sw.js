@@ -1,4 +1,4 @@
-const CACHE_NAME = 'onc-tools-v8';
+const CACHE_NAME = 'onc-tools-v9';
 
 const PRECACHE_URLS = [
   'index.html',
