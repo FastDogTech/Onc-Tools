@@ -531,3 +531,79 @@ select.pill-select {
   color: var(--text-secondary);
   font-size: 13px;
 }
+
+.help-btn {
+  margin-left: auto;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent);
+  font: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.help-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.2s;
+}
+
+.help-backdrop.open {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.help-sheet {
+  width: 100%;
+  max-width: 640px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 20px 16px calc(16px + env(safe-area-inset-bottom));
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 14px 14px 0 0;
+  box-shadow: 0 -2px 10px var(--shadow);
+  transform: translateY(100%);
+  transition: transform 0.25s ease-out;
+}
+
+.help-backdrop.open .help-sheet {
+  transform: translateY(0);
+}
+
+.help-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.help-item {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.help-term {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.help-text {
+  margin-top: 2px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.help-done {
+  width: 100%;
+  margin-top: 16px;
+}

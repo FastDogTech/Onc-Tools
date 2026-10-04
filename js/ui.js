@@ -239,12 +239,115 @@ const TABS = [
 
 const SETTINGS_ICON_SVG = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>';
 
+const HELP = {
+  bsa: {
+    title: 'BSA',
+    items: [
+      { term: 'Height / Weight', text: 'Enter the patient\'s values. Tap the buttons to switch between metric and imperial.' },
+      { term: 'Formula button', text: 'Switches between the Dubois and Mosteller BSA formulas.' },
+      { term: 'Dose', text: 'Enter a dose per m² to get the total dose (BSA × dose).' },
+      { term: 'Save', text: 'Stores the calculation in History.' },
+      { term: 'Reset', text: 'Clears the entered values.' },
+      { term: 'History', text: 'Tap a saved row to load it back into the calculator. Clear deletes all saved rows.' }
+    ]
+  },
+  auc: {
+    title: 'AUC (Carboplatin)',
+    items: [
+      { term: 'Age / Weight / Sex', text: 'Enter the patient\'s values. Tap the buttons to switch between metric and imperial or to change the sex.' },
+      { term: 'Serum creatinine', text: 'Enter the patient\'s serum creatinine to calculate CrCl.' },
+      { term: 'Max Cr Clearance', text: 'Caps the CrCl used in the Calvert formula. Change the default in Settings.' },
+      { term: 'Target AUC', text: 'Enter the target AUC to get the carboplatin dose from the Calvert formula.' },
+      { term: 'Save', text: 'Stores the calculation in History.' },
+      { term: 'Reset', text: 'Clears the entered values.' },
+      { term: 'History', text: 'Tap a saved row to load it back into the calculator. Clear deletes all saved rows.' }
+    ]
+  },
+  weight: {
+    title: 'Weight',
+    items: [
+      { term: 'Height / Weight / Sex', text: 'Enter the patient\'s values. Tap the buttons to switch between metric and imperial or to change the sex.' },
+      { term: 'Actual / Adjusted / Ideal', text: 'Chooses which weight is used for the dose: actual body weight, adjusted body weight, or ideal body weight. The formulas are shown below the result.' },
+      { term: 'Dose', text: 'Enter a dose per kg to get the total dose for the selected weight.' },
+      { term: 'Save', text: 'Stores the calculation in History.' },
+      { term: 'Reset', text: 'Clears the entered values.' },
+      { term: 'History', text: 'Tap a saved row to load it back into the calculator. Clear deletes all saved rows.' }
+    ]
+  },
+  misc: {
+    title: 'Misc',
+    items: [
+      { term: 'ANC', text: 'Calculates the absolute neutrophil count from the white blood cell count and differential.' },
+      { term: 'Calcium', text: 'Corrects serum calcium for the albumin level.' },
+      { term: 'CrCl / eGFR', text: 'Estimates kidney function from age, weight, sex and serum creatinine. The formulas are shown at the bottom.' },
+      { term: 'Units', text: 'Converts height, weight and temperature. Tap a unit button to switch direction.' },
+      { term: 'Reset', text: 'Clears the entered values.' }
+    ]
+  },
+  'date-finder': {
+    title: 'Dates',
+    items: [
+      { term: 'Between Dates', text: 'Pick a start and end date to see the time between them. Today fills in the current date.' },
+      { term: 'Find Date', text: 'Starts from a date and time, then finds the date a set number of hours, days, weeks or months in the past or future.' },
+      { term: 'Show / In the', text: 'Choose the period (hours, days, weeks, months) and the direction (past or future).' },
+      { term: 'Reset', text: 'Clears the entered values.' }
+    ]
+  },
+  settings: {
+    title: 'Settings',
+    items: [
+      { term: 'Appearance', text: 'Choose an accent color and a Light, Dark or System theme.' },
+      { term: 'Defaults', text: 'The starting height and weight units, sex, BSA formula and maximum creatinine clearance used when the app opens.' },
+      { term: 'Feedback', text: 'Email feedback@fastdog.tech with questions or suggestions.' }
+    ]
+  }
+};
+
+function openHelp(pageId) {
+  const content = HELP[pageId];
+  if (!content || document.querySelector('.help-backdrop')) return;
+
+  const opener = document.activeElement;
+  const body = el('div', { class: 'help-body' });
+  content.items.forEach(item => {
+    body.appendChild(el('div', { class: 'help-item' }, [
+      el('div', { class: 'help-term', text: item.term }),
+      el('div', { class: 'help-text', text: item.text })
+    ]));
+  });
+
+  const doneBtn = el('button', { type: 'button', class: 'btn-save help-done', text: 'Done' });
+  const sheet = el('div', { class: 'help-sheet', role: 'dialog', 'aria-modal': 'true', 'aria-label': content.title + ' help' }, [
+    el('div', { class: 'help-title', text: content.title + ' Help' }),
+    body,
+    doneBtn
+  ]);
+  const backdrop = el('div', { class: 'help-backdrop' }, [sheet]);
+
+  function close() {
+    document.removeEventListener('keydown', onKey);
+    document.body.style.overflow = '';
+    backdrop.remove();
+    if (opener && opener.focus) opener.focus();
+  }
+  function onKey(e) { if (e.key === 'Escape') close(); }
+
+  backdrop.addEventListener('click', e => { if (e.target === backdrop) close(); });
+  doneBtn.addEventListener('click', close);
+  document.addEventListener('keydown', onKey);
+  document.body.style.overflow = 'hidden';
+  document.body.appendChild(backdrop);
+  requestAnimationFrame(() => backdrop.classList.add('open'));
+  doneBtn.focus();
+}
+
 function renderHeader(container, opts) {
   const { active } = opts;
 
   container.appendChild(el('div', { class: 'site-title' }, [
     el('img', { class: 'site-logo', src: 'img/onctoolslogo-96.png', alt: '', width: '32', height: '32' }),
-    document.createTextNode('Onc Tools')
+    document.createTextNode('Onc Tools'),
+    el('button', { type: 'button', class: 'help-btn', 'aria-label': 'Help', text: '?', onclick: () => openHelp(active) })
   ]));
 
   const tabbar = el('nav', { class: 'tabbar' });
