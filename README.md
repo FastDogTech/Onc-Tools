@@ -1,4 +1,4 @@
-<h1 style="align: center">Onc Tools Webpage</h1>
+<h1 style="align: center">Onc Tools</h1>
 <img src="https://raw.githubusercontent.com/FastDogTech/Onc-Tools/refs/heads/main/img/onctoolslogo.png" width="200">
 
 Onc Tools is a set of oncology clinical calculators that runs entirely in your web browser. Open it at **[onctools.com](https://onctools.com)**. It also installs to a phone or desktop home screen like an app and keeps working offline.
